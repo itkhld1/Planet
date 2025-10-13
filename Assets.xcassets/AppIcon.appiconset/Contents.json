@@ -1,0 +1,14 @@
+{
+  "images" : [
+    {
+      "filename" : "a-logo-with-a-transparent-background-fea_ykUiay-tThGkCqvnf2f_bg_KCUmvxEyT46Qhnvxq-y-YA.jpeg",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
