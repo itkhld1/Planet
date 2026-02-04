@@ -5,6 +5,18 @@ It was originally created for submission to **Apple’s WWDC25 Swift Student Cha
 
 ---
 
+## 📸 Screenshots
+
+<p float="left">
+  <img width="185" src="Screenshots/2.JPG">
+  <img width="185" src="Screenshots/1.JPG">
+  <img width="185" src="Screenshots/4.JPG">
+  <img width="185" src="Screenshots/3.JPG">
+  <img width="185" src="Screenshots/5.JPG">
+</p>
+
+---
+
 ## 🚀 Overview
 
 Planet lets users explore different celestial bodies with smooth animations, facts, and a modern UI.  
