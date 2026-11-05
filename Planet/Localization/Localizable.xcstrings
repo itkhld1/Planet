@@ -4,6 +4,26 @@
     "" : {
 
     },
+    "%@ minutes" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ دقیقه"
+          }
+        }
+      }
+    },
+    "%@ seconds" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ثانیه"
+          }
+        }
+      }
+    },
     "**Calculator Tab:** Enter your weight or age on Earth and instantly see how much you'd weigh and how old you'd be on every other planet." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -287,6 +307,266 @@
         }
       }
     },
+    "Add your age to see how old you'd be when you arrive" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سن خود را وارد کنید تا ببینید هنگام رسیدن چند ساله خواهید بود"
+          }
+        }
+      }
+    },
+    "Back on %@" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بازگشت به %@"
+          }
+        }
+      }
+    },
+    "Cheapest" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ارزان‌ترین"
+          }
+        }
+      }
+    },
+    "Cheapest (Hohmann)" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ارزان‌ترین (هوهمان)"
+          }
+        }
+      }
+    },
+    "Day %@ of %@" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "روز %1$@ از %2$@"
+          }
+        }
+      }
+    },
+    "Distances not to scale" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فاصله‌ها به مقیاس نیستند"
+          }
+        }
+      }
+    },
+    "Faster, more fuel" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سریع‌تر، سوخت بیشتر"
+          }
+        }
+      }
+    },
+    "Fastest" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سریع‌ترین"
+          }
+        }
+      }
+    },
+    "Flight home" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "پرواز بازگشت"
+          }
+        }
+      }
+    },
+    "Jump to launch window" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رفتن به پنجره‌ی پرتاب"
+          }
+        }
+      }
+    },
+    "Launch window open" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "پنجره‌ی پرتاب باز است"
+          }
+        }
+      }
+    },
+    "Message to %@" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "پیام به %@"
+          }
+        }
+      }
+    },
+    "My mission to %@" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مأموریت من به %@"
+          }
+        }
+      }
+    },
+    "Next launch window: %@ (in %@ days)" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "پنجره‌ی پرتاب بعدی: %1$@ (%2$@ روز دیگر)"
+          }
+        }
+      }
+    },
+    "Orbit diagram: %@ to %@" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نمودار مدار: از %1$@ به %2$@"
+          }
+        }
+      }
+    },
+    "Planets aren't lined up" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سیاره‌ها در یک راستا نیستند"
+          }
+        }
+      }
+    },
+    "Planned with Planet" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "برنامه‌ریزی‌شده با Planet"
+          }
+        }
+      }
+    },
+    "Real missions" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مأموریت‌های واقعی"
+          }
+        }
+      }
+    },
+    "Real missions often fly faster routes, or swing past other planets to pick up speed." : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مأموریت‌های واقعی اغلب مسیرهای سریع‌تری را می‌پیمایند یا با گذر از کنار سیاره‌های دیگر سرعت می‌گیرند."
+          }
+        }
+      }
+    },
+    "Round trip" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رفت و برگشت"
+          }
+        }
+      }
+    },
+    "Route" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مسیر"
+          }
+        }
+      }
+    },
+    "Share mission" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اشتراک‌گذاری مأموریت"
+          }
+        }
+      }
+    },
+    "The planets line up — a great day to launch." : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سیاره‌ها در یک راستا هستند — روز خوبی برای پرتاب است."
+          }
+        }
+      }
+    },
+    "Wait on %@" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "انتظار روی %@"
+          }
+        }
+      }
+    },
+    "Whole mission" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "کل مأموریت"
+          }
+        }
+      }
+    },
+    "Your age on arrival" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سن شما هنگام رسیدن"
+          }
+        }
+      }
+    },
     "•" : {
       "comment" : "A bullet point.",
       "isCommentAutoGenerated" : true,
@@ -510,6 +790,7 @@
       }
     },
     "Browse and search planets" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fa" : {
           "stringUnit" : {
@@ -2066,6 +2347,7 @@
       }
     },
     "Settings and info" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fa" : {
           "stringUnit" : {

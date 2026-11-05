@@ -11,10 +11,6 @@ struct HomeView: View {
     
     @State private var selectedPlanet: Planet?
     @State private var selectedStar: Star?
-    @State private var showSettings = false
-    @State private var showSolarSystem3D = false
-    @State private var showPlanetList = false
-    @State private var showCompare = false
     @State private var sunAngle: Double = 0
     @State private var zoomScale: CGFloat = 1.0
     @State private var currentDragOffset: CGSize = .zero
@@ -129,55 +125,6 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            showSettings.toggle()
-                        } label: {
-                            Image(systemName: "gear")
-                                .foregroundColor(.gray)
-                        }
-                        .accessibilityLabel("Settings and info")
-                        .sheet(isPresented: $showSettings) {
-                            SettingsView()
-                                .appLanguageEnvironment()
-                                .presentationDragIndicator(.visible)
-                        }
-                    }
-
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            showPlanetList.toggle()
-                        } label: {
-                            Image(systemName: "list.bullet")
-                                .foregroundColor(.gray)
-                        }
-                        .accessibilityLabel("Browse and search planets")
-                        .sheet(isPresented: $showPlanetList) {
-                            PlanetListView()
-                                .appLanguageEnvironment()
-                                .presentationDragIndicator(.visible)
-                        }
-                    }
-
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            showCompare.toggle()
-                        } label: {
-                            Image(systemName: "arrow.left.and.right.square")
-                                .foregroundColor(.gray)
-                        }
-                        .accessibilityLabel("Compare planets")
-                        // Its own stack: this is a sheet, so there's nothing
-                        // here to push onto.
-                        .sheet(isPresented: $showCompare) {
-                            NavigationStack {
-                                ComparePlanetsView()
-                            }
-                            .appLanguageEnvironment()
-                            .presentationDragIndicator(.visible)
-                        }
-                    }
-                    
                     ToolbarItem(placement: .principal) {
                         Text("Solar System")
                             .font(AppFont.regular(15))
@@ -190,18 +137,6 @@ struct HomeView: View {
                             }
                     }
                     
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button {
-                            showSolarSystem3D.toggle()
-                        } label: {
-                            Image(systemName: "rotate.3d")
-                                .foregroundColor(.gray)
-                        }
-                        .sheet(isPresented: $showSolarSystem3D) {
-                            ViewControllerWrapper(planet: Planet(name: "Solar System", size: 0, imageName: "", orbiteRadius: 0, initialAngle: 0, description: "", diameter: "", distanceFromSun: "", dayLength: "", rotationDuration: 0, planet3DModel: "Solar_System_Custom"))
-                                .presentationDragIndicator(.visible)
-                        }
-                    }
                 }
                 .ignoresSafeArea()
                 .sheet(item: $selectedPlanet) { planet in
@@ -301,55 +236,6 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            showSettings.toggle()
-                        } label: {
-                            Image(systemName: "info.circle")
-                                .foregroundColor(.gray)
-                        }
-                        .accessibilityLabel("Settings and info")
-                        .sheet(isPresented: $showSettings) {
-                            SettingsView()
-                                .appLanguageEnvironment()
-                                .presentationDragIndicator(.visible)
-                        }
-                    }
-
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            showPlanetList.toggle()
-                        } label: {
-                            Image(systemName: "list.bullet")
-                                .foregroundColor(.gray)
-                        }
-                        .accessibilityLabel("Browse and search planets")
-                        .sheet(isPresented: $showPlanetList) {
-                            PlanetListView()
-                                .appLanguageEnvironment()
-                                .presentationDragIndicator(.visible)
-                        }
-                    }
-
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            showCompare.toggle()
-                        } label: {
-                            Image(systemName: "arrow.left.and.right.square")
-                                .foregroundColor(.gray)
-                        }
-                        .accessibilityLabel("Compare planets")
-                        // Its own stack: this is a sheet, so there's nothing
-                        // here to push onto.
-                        .sheet(isPresented: $showCompare) {
-                            NavigationStack {
-                                ComparePlanetsView()
-                            }
-                            .appLanguageEnvironment()
-                            .presentationDragIndicator(.visible)
-                        }
-                    }
-                    
                     ToolbarItem(placement: .principal) {
                         Text("Solar System")
                             .font(AppFont.regular(15))
@@ -362,19 +248,6 @@ struct HomeView: View {
                             }
                     }
                     
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button {
-                            showSolarSystem3D.toggle()
-                        } label: {
-                            Image(systemName: "rotate.3d")
-                                .foregroundColor(.gray)
-                        }
-                        .sheet(isPresented: $showSolarSystem3D) {
-                            ViewControllerWrapper(planet: Planet(name: "Solar System", size: 0, imageName: "", orbiteRadius: 0, initialAngle: 0, description: "", diameter: "", distanceFromSun: "", dayLength: "", rotationDuration: 0, planet3DModel: "Solar_System_Custom"))
-                                .presentationDragIndicator(.visible)
-                                .frame(height: 900)
-                        }
-                    }
                 }
                 .ignoresSafeArea()
                 
