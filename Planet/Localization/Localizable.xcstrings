@@ -385,6 +385,16 @@
         }
       }
     },
+    "%@, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@"
+          }
+        }
+      }
+    },
     "%@, not visited yet" : {
       "localizations" : {
         "fa" : {
@@ -477,7 +487,18 @@
         }
       }
     },
+    "%lld s" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ثانیه"
+          }
+        }
+      }
+    },
     "%llds" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fa" : {
           "stringUnit" : {
@@ -510,12 +531,12 @@
         }
       }
     },
-    "🏆 New High Score!" : {
+    "🔥 %lld in a row" : {
       "localizations" : {
         "fa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "🏆 رکورد تازه!"
+            "value" : "🔥 %lld پشت سر هم"
           }
         }
       }
@@ -614,13 +635,12 @@
         }
       }
     },
-    "A day there lasts longer than its year" : {
-      "extractionState" : "stale",
+    "A" : {
       "localizations" : {
         "fa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "یک روز در آن از یک سالش طولانی‌تر است"
+            "value" : "الف"
           }
         }
       }
@@ -696,17 +716,6 @@
         }
       }
     },
-    "Add your age to see how old you'd be when you arrive" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "سن خود را وارد کنید تا ببینید هنگام رسیدن چند ساله خواهید بود"
-          }
-        }
-      }
-    },
     "Age Calculator" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -728,13 +737,13 @@
         }
       }
     },
-    "Answer 10 random questions drawn from a pool of over 130. Every quiz is different, so keep playing to beat your high score." : {
+    "Answer 10 random questions drawn from a pool of over 200. Every quiz is different, so keep playing to beat your high score." : {
       "extractionState" : "manual",
       "localizations" : {
         "fa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "به ۱۰ پرسش تصادفی از میان بیش از ۱۳۰ پرسش پاسخ دهید. هر آزمون متفاوت است، پس بازی کنید تا رکوردتان را بشکنید."
+            "value" : "به ۱۰ پرسش تصادفی از میان بیش از ۲۰۰ پرسش پاسخ دهید. هر آزمون متفاوت است، پس بازی کنید تا رکوردتان را بشکنید."
           }
         }
       }
@@ -830,6 +839,16 @@
         }
       }
     },
+    "B" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ب"
+          }
+        }
+      }
+    },
     "Back on %@" : {
       "localizations" : {
         "fa" : {
@@ -850,23 +869,22 @@
         }
       }
     },
+    "Best streak: %lld" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بهترین زنجیره: %lld"
+          }
+        }
+      }
+    },
     "Bring the crew home from Mars. No guide this time: launch, look where Earth ends up, and adjust." : {
       "localizations" : {
         "fa" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "خدمه را از مریخ به خانه برگردانید. این بار راهنما در کار نیست: پرتاب کنید، ببینید زمین کجا قرار می‌گیرد و تنظیم کنید."
-          }
-        }
-      }
-    },
-    "Browse and search planets" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "مرور و جست‌وجوی سیاره‌ها"
           }
         }
       }
@@ -881,35 +899,12 @@
         }
       }
     },
-    "Bullseye! You reached %@" : {
-      "extractionState" : "stale",
+    "C" : {
       "localizations" : {
         "fa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "درست وسط هدف! به %@ رسیدید"
-          }
-        }
-      }
-    },
-    "Calculate your weight on different planets" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "وزن خود را در سیاره‌های دیگر حساب کنید"
-          }
-        }
-      }
-    },
-    "Calculator" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ماشین‌حساب"
+            "value" : "ج"
           }
         }
       }
@@ -995,6 +990,16 @@
         }
       }
     },
+    "Close" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بستن"
+          }
+        }
+      }
+    },
     "Close to the Sun" : {
       "localizations" : {
         "fa" : {
@@ -1051,6 +1056,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "مقایسه‌ی سیاره‌ها"
+          }
+        }
+      }
+    },
+    "Correct!" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "درست است!"
           }
         }
       }
@@ -1131,6 +1146,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "کوتاه کردن سفر به کمتر از چهار ماه تقریباً سه برابر ارزان‌ترین مسیر سوخت می‌خواهد. به همین دلیل مأموریت‌های واقعی به مریخ ۶ تا ۹ ماه طول می‌کشند."
+          }
+        }
+      }
+    },
+    "D" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "د"
           }
         }
       }
@@ -1285,6 +1310,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "برای گشت‌وگذار بکشید"
+          }
+        }
+      }
+    },
+    "E" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ه"
           }
         }
       }
@@ -1457,34 +1492,12 @@
         }
       }
     },
-    "EXPLORE" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "کاوش"
-          }
-        }
-      }
-    },
     "Explore %@ in 3D" : {
       "localizations" : {
         "fa" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "کاوش %@ به‌صورت سه‌بعدی"
-          }
-        }
-      }
-    },
-    "Explore Cosmic Calculations" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "محاسبه‌های کیهانی را کشف کنید"
           }
         }
       }
@@ -1506,6 +1519,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "کاوشگر ۱"
+          }
+        }
+      }
+    },
+    "F" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "و"
           }
         }
       }
@@ -1546,17 +1569,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "سریع‌ترین"
-          }
-        }
-      }
-    },
-    "FEATURED WORLDS" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جهان‌های برگزیده"
           }
         }
       }
@@ -1608,28 +1620,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "غذای سفر"
-          }
-        }
-      }
-    },
-    "From" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "از"
-          }
-        }
-      }
-    },
-    "From 430 °C by day to −180 °C at night" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "از ۴۳۰ درجه‌ی سانتی‌گراد در روز تا منفی ۱۸۰ درجه در شب"
           }
         }
       }
@@ -1808,30 +1798,6 @@
         }
       }
     },
-    "Home" : {
-      "comment" : "A label for the home tab.",
-      "extractionState" : "stale",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "خانه"
-          }
-        }
-      }
-    },
-    "Home of Olympus Mons, the tallest volcano we know" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "خانه‌ی کوه المپوس، بلندترین آتشفشان شناخته‌شده"
-          }
-        }
-      }
-    },
     "Homecoming" : {
       "localizations" : {
         "fa" : {
@@ -1873,17 +1839,6 @@
         }
       }
     },
-    "How this works" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "چگونه کار می‌کند"
-          }
-        }
-      }
-    },
     "How to use" : {
       "localizations" : {
         "fa" : {
@@ -1895,17 +1850,6 @@
       }
     },
     "How to use the app" : {
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "راهنمای استفاده از برنامه"
-          }
-        }
-      }
-    },
-    "How to use the app " : {
-      "extractionState" : "manual",
       "localizations" : {
         "fa" : {
           "stringUnit" : {
@@ -2049,17 +1993,6 @@
         }
       }
     },
-    "Its Great Red Spot is a storm wider than Earth" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لکه‌ی سرخ بزرگ آن طوفانی پهن‌تر از زمین است"
-          }
-        }
-      }
-    },
     "Jump to launch window" : {
       "localizations" : {
         "fa" : {
@@ -2174,17 +2107,6 @@
         }
       }
     },
-    "Launch Star Gazer AR experience" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اجرای تجربه‌ی واقعیت افزوده‌ی ستاره‌نگر"
-          }
-        }
-      }
-    },
     "Launch window every" : {
       "localizations" : {
         "fa" : {
@@ -2263,17 +2185,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "پرتاب شد!"
-          }
-        }
-      }
-    },
-    "Light enough to float in a giant bathtub" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "آن‌قدر سبک که در یک وان غول‌پیکر شناور می‌ماند"
           }
         }
       }
@@ -2565,6 +2476,16 @@
         }
       }
     },
+    "New High Score!" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رکورد تازه!"
+          }
+        }
+      }
+    },
     "New mission in %@ h %@ min" : {
       "localizations" : {
         "fa" : {
@@ -2681,6 +2602,16 @@
         }
       }
     },
+    "Not quite" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نه کاملاً"
+          }
+        }
+      }
+    },
     "Not to scale — the smaller one is shown larger than it really is." : {
       "localizations" : {
         "fa" : {
@@ -2718,19 +2649,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "خاموش"
-          }
-        }
-      }
-    },
-    "Ok" : {
-      "comment" : "A label displayed in the center of the screen.",
-      "extractionState" : "stale",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "باشه"
           }
         }
       }
@@ -2900,17 +2818,6 @@
         }
       }
     },
-    "Pick two different planets to plan a mission." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "دو سیاره‌ی متفاوت انتخاب کنید تا مأموریت را برنامه‌ریزی کنید."
-          }
-        }
-      }
-    },
     "Pinch to resize, twist to rotate, drag to move. Tap again to add another." : {
       "localizations" : {
         "fa" : {
@@ -2952,34 +2859,12 @@
         }
       }
     },
-    "Planet" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "سیاره"
-          }
-        }
-      }
-    },
     "Planet names" : {
       "localizations" : {
         "fa" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "نام سیاره‌ها"
-          }
-        }
-      }
-    },
-    "Planetary Calculators" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ماشین‌حساب‌های سیاره‌ای"
           }
         }
       }
@@ -3065,17 +2950,6 @@
         }
       }
     },
-    "Profile & Settings" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نمایه و تنظیمات"
-          }
-        }
-      }
-    },
     "Proteus" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3087,12 +2961,12 @@
         }
       }
     },
-    "Question #%lld" : {
+    "Question %lld of %lld" : {
       "localizations" : {
         "fa" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "پرسش #%lld"
+            "value" : "پرسش %lld از %lld"
           }
         }
       }
@@ -3400,6 +3274,16 @@
         }
       }
     },
+    "Score: %lld of %lld" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "امتیاز: %lld از %lld"
+          }
+        }
+      }
+    },
     "Search moons" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3407,19 +3291,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "جست‌وجوی قمرها"
-          }
-        }
-      }
-    },
-    "Search planets" : {
-      "comment" : "A button that opens a search interface.",
-      "extractionState" : "stale",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جستجوی سیاره‌ها"
           }
         }
       }
@@ -3457,34 +3328,12 @@
         }
       }
     },
-    "See what you'd weigh across the solar system" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ببینید در منظومه شمسی چقدر وزن دارید"
-          }
-        }
-      }
-    },
     "Settings" : {
       "localizations" : {
         "fa" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "تنظیمات"
-          }
-        }
-      }
-    },
-    "Settings and info" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تنظیمات و اطلاعات"
           }
         }
       }
@@ -3515,16 +3364,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "مأموریتتان را به اشتراک بگذارید"
-          }
-        }
-      }
-    },
-    "Show %@" : {
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نمایش %@"
           }
         }
       }
@@ -3565,17 +3404,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "جای کنونی سیاره‌ها را نشان می‌دهد"
-          }
-        }
-      }
-    },
-    "Simulation" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "شبیه‌سازی"
           }
         }
       }
@@ -3732,28 +3560,6 @@
         }
       }
     },
-    "Spins on its side, rolling around the Sun" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "به پهلو می‌چرخد و دور خورشید می‌غلتد"
-          }
-        }
-      }
-    },
-    "STAR GAZER" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ستاره‌نگر"
-          }
-        }
-      }
-    },
     "Strong storm" : {
       "localizations" : {
         "fa" : {
@@ -3888,17 +3694,6 @@
         }
       }
     },
-    "The only world known to have life" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تنها جهانی که می‌دانیم در آن حیات هست"
-          }
-        }
-      }
-    },
     "The planets line up — a great day to launch." : {
       "localizations" : {
         "fa" : {
@@ -3931,17 +3726,6 @@
         }
       }
     },
-    "The windiest planet, over 2,000 km/h" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "پربادترین سیاره، با بادهایی تندتر از ۲٬۰۰۰ کیلومتر بر ساعت"
-          }
-        }
-      }
-    },
     "This 3D model is unavailable." : {
       "localizations" : {
         "fa" : {
@@ -3958,6 +3742,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "زمان باقی‌مانده"
+          }
+        }
+      }
+    },
+    "Time's up!" : {
+      "localizations" : {
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "وقت تمام شد!"
           }
         }
       }
@@ -3980,17 +3774,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "تیتانیا"
-          }
-        }
-      }
-    },
-    "To" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "به"
           }
         }
       }
@@ -4252,17 +4035,6 @@
         }
       }
     },
-    "View" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "مشاهده"
-          }
-        }
-      }
-    },
     "Visit Saturn's rings within four years." : {
       "localizations" : {
         "fa" : {
@@ -4458,28 +4230,6 @@
         }
       }
     },
-    "You reached %@!" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "به %@ رسیدید!"
-          }
-        }
-      }
-    },
-    "Your age on arrival" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "سن شما هنگام رسیدن"
-          }
-        }
-      }
-    },
     "Your age on different planetary orbits" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4533,17 +4283,6 @@
         }
       }
     },
-    "Your mission" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "مأموریت شما"
-          }
-        }
-      }
-    },
     "Your weight on Earth (%@)" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4562,26 +4301,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "سال"
-          }
-        }
-      }
-    },
-    "Zoom in" : {
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "بزرگ‌نمایی"
-          }
-        }
-      }
-    },
-    "Zoom out" : {
-      "localizations" : {
-        "fa" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "کوچک‌نمایی"
           }
         }
       }

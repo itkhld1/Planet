@@ -101,7 +101,7 @@ enum AppFeature: String, CaseIterable, Identifiable {
     var gradient: [Color] {
         switch self {
         case .spaceWeather: return [.orange, .red]
-        case .missionBuilder: return [.blue, .cyan]
+        case .missionBuilder: return [.blue, Palette.accent]
         case .encyclopedia: return [.green, .teal]
         case .compare: return [.purple, .pink]
         case .quiz: return [.indigo, .purple]

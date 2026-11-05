@@ -8,33 +8,12 @@
 
 import SwiftUI
 
-// MARK: - Storage
+// MARK: - Planets
 
-/// First-visit dates per planet, saved as JSON in one UserDefaults string.
-///
-/// A planet also counts as visited if any challenge to it has a star, so
-/// players who earned stars before the passport existed keep their stamps
-/// (just without a date).
+/// The planets with stamps, and their ink. Visits are saved in
+/// `ProgressStore`.
 enum Passport {
-    static let storageKey = "missionPassport"
-
     static let planets = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]
-
-    static func decode(_ json: String) -> [String: Double] {
-        (try? JSONDecoder().decode([String: Double].self, from: Data(json.utf8))) ?? [:]
-    }
-
-    static func encode(_ visits: [String: Double]) -> String {
-        (try? JSONEncoder().encode(visits)).flatMap { String(data: $0, encoding: .utf8) } ?? ""
-    }
-
-    static func visited(_ planet: String, visits: [String: Double], stars: [String: Int]) -> Bool {
-        visits[planet] != nil || MissionChallenge.all.contains { $0.target == planet && (stars[$0.id] ?? 0) > 0 }
-    }
-
-    static func visitedCount(visits: [String: Double], stars: [String: Int]) -> Int {
-        planets.filter { visited($0, visits: visits, stars: stars) }.count
-    }
 
     /// Ink colour for each planet's stamp.
     static func color(_ planet: String) -> Color {
@@ -75,7 +54,7 @@ struct PlanetStampView: View {
                     if !visited {
                         Image(systemName: "questionmark")
                             .font(.system(size: size * 0.18, weight: .bold))
-                            .foregroundColor(.white.opacity(0.6))
+                            .foregroundColor(Palette.secondaryText)
                     }
                 }
             Text(planet.localizedBodyName)
@@ -101,7 +80,7 @@ struct PlanetStampView: View {
         .frame(width: size, height: size * 1.12)
         .background(
             RoundedRectangle(cornerRadius: size * 0.06)
-                .fill(visited ? ink.opacity(0.14) : Color.black.opacity(0.28))
+                .fill(visited ? ink.opacity(0.14) : Palette.card)
         )
         // Dashed edge for the perforations, solid inner frame for the print.
         .overlay(
@@ -124,15 +103,11 @@ struct PlanetStampView: View {
 // MARK: - Passport screen
 
 struct SpacePassportView: View {
-    @AppStorage(Passport.storageKey) private var visitsJSON = ""
-    @AppStorage(ChallengeProgress.storageKey) private var starsJSON = ""
-
+    private var progress: ProgressStore { .shared }
     private var isPhone: Bool { deviceType() == "iPhone" }
-    private var visits: [String: Double] { Passport.decode(visitsJSON) }
-    private var stars: [String: Int] { ChallengeProgress.decode(starsJSON) }
 
     var body: some View {
-        let visited = Passport.visitedCount(visits: visits, stars: stars)
+        let visited = progress.visitedPlanetCount
         ZStack {
             AppGradientBackground()
 
@@ -141,8 +116,8 @@ struct SpacePassportView: View {
                     VStack(spacing: 8) {
                         Image(systemName: "book.closed.fill")
                             .font(.system(size: isPhone ? 40 : 56))
-                            .foregroundColor(.cyan)
-                            .shadow(color: .cyan.opacity(0.5), radius: 12)
+                            .foregroundColor(Palette.accent)
+                            .shadow(color: Palette.accent.opacity(0.5), radius: 12)
                         Text("\(MetricFormat.plain(Double(visited), decimals: 0)) / \(MetricFormat.plain(Double(Passport.planets.count), decimals: 0)) planets visited")
                             .font(AppFont.bold(isPhone ? 22 : 30))
                             .foregroundColor(.white)
@@ -159,9 +134,9 @@ struct SpacePassportView: View {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 14),
                                              count: isPhone ? 2 : 4), spacing: 18) {
                         ForEach(Array(Passport.planets.enumerated()), id: \.element) { i, planet in
-                            let isVisited = Passport.visited(planet, visits: visits, stars: stars)
+                            let isVisited = progress.hasVisited(planet)
                             PlanetStampView(planet: planet, visited: isVisited,
-                                            date: visits[planet].map { Date(timeIntervalSince1970: $0) },
+                                            date: progress.firstVisit(to: planet),
                                             size: isPhone ? 140 : 160)
                                 // A slight tilt each way, like stamps pressed by hand.
                                 .rotationEffect(.degrees(isVisited ? (i.isMultiple(of: 2) ? -3 : 2.5) : 0))

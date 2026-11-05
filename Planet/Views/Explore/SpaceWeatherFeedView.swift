@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import Combine
 
 // MARK: - Model
 
@@ -37,17 +36,27 @@ enum SpaceWeatherService {
         async let scales = json("noaa-scales.json")
 
         let (w, m, f, k, s) = await (try? wind, try? mag, try? flux, try? kp, try? scales)
-        if w == nil && m == nil && f == nil && k == nil && s == nil {
+        guard let report = report(wind: w, magneticField: m, flux: f, kp: k, scales: s) else {
             throw URLError(.cannotLoadFromNetwork)
         }
+        return report
+    }
 
-        var report = SpaceWeatherReport()
-        report.solarWindSpeed = latest(w, key: "proton_speed")
-        report.magneticFieldBz = latest(m, key: "bz_gsm")
-        report.solarFlux = latest(f, key: "flux")
-        report.kpIndex = latest(k, key: "Kp")
+    /// Builds a report from the decoded JSON of each endpoint. Nil only when
+    /// every endpoint failed.
+    static func report(wind: Any?, magneticField: Any?, flux: Any?, kp: Any?, scales: Any?,
+                       updated: Date = Date()) -> SpaceWeatherReport? {
+        if wind == nil && magneticField == nil && flux == nil && kp == nil && scales == nil {
+            return nil
+        }
 
-        if let current = (s as? [String: Any])?["0"] as? [String: Any] {
+        var report = SpaceWeatherReport(updated: updated)
+        report.solarWindSpeed = latest(wind, key: "proton_speed")
+        report.magneticFieldBz = latest(magneticField, key: "bz_gsm")
+        report.solarFlux = latest(flux, key: "flux")
+        report.kpIndex = latest(kp, key: "Kp")
+
+        if let current = (scales as? [String: Any])?["0"] as? [String: Any] {
             report.geomagneticScale = scale(current["G"])
             report.radioScale = scale(current["R"])
             report.radiationScale = scale(current["S"])
@@ -92,10 +101,11 @@ enum SpaceWeatherService {
 // MARK: - View model
 
 @MainActor
-final class SpaceWeatherViewModel: ObservableObject {
-    @Published var report: SpaceWeatherReport?
-    @Published var isLoading = false
-    @Published var failed = false
+@Observable
+final class SpaceWeatherViewModel {
+    var report: SpaceWeatherReport?
+    var isLoading = false
+    var failed = false
 
     func load() async {
         guard !isLoading else { return }
@@ -115,7 +125,7 @@ final class SpaceWeatherViewModel: ObservableObject {
 /// Laid out like Compare Planets: a visual headline, then one dark card of
 /// labelled rows, then a plain-language takeaway.
 struct SpaceWeatherFeedView: View {
-    @StateObject private var viewModel = SpaceWeatherViewModel()
+    @State private var viewModel = SpaceWeatherViewModel()
 
     private var isPhone: Bool { deviceType() == "iPhone" }
 
@@ -133,7 +143,7 @@ struct SpaceWeatherFeedView: View {
 
                         Text("Data: NOAA Space Weather Prediction Center · Updated \(report.updated.formatted(date: .omitted, time: .shortened))")
                             .font(AppFont.regular(isPhone ? 11 : 15))
-                            .foregroundColor(.white.opacity(0.55))
+                            .foregroundColor(Palette.secondaryText)
                             .multilineTextAlignment(.center)
                     } else if viewModel.failed {
                         errorState
@@ -180,7 +190,7 @@ struct SpaceWeatherFeedView: View {
 
             Text("Aurora outlook")
                 .font(AppFont.regular(isPhone ? 12 : 17))
-                .foregroundColor(.white.opacity(0.55))
+                .foregroundColor(Palette.secondaryText)
             Text(title)
                 .font(AppFont.bold(isPhone ? 24 : 34))
                 .foregroundColor(color)
@@ -192,7 +202,7 @@ struct SpaceWeatherFeedView: View {
             // Kp gauge 0–9
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    Capsule().fill(Color.black.opacity(0.3))
+                    Capsule().fill(Palette.card)
                     Capsule()
                         .fill(LinearGradient(colors: [.green, .yellow, .orange, .red], startPoint: .leading, endPoint: .trailing))
                         .frame(width: max(8, geo.size.width * min(kp, 9) / 9))
@@ -204,7 +214,7 @@ struct SpaceWeatherFeedView: View {
 
             Text("Kp index: \(MetricFormat.plain(kp, decimals: 1)) / 9")
                 .font(AppFont.regular(isPhone ? 12 : 17))
-                .foregroundColor(.white.opacity(0.55))
+                .foregroundColor(Palette.secondaryText)
         }
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)
@@ -250,7 +260,7 @@ struct SpaceWeatherFeedView: View {
                     .foregroundColor(.white)
                 Text(note)
                     .font(AppFont.regular(isPhone ? 12 : 17))
-                    .foregroundColor(.white.opacity(0.55))
+                    .foregroundColor(Palette.secondaryText)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
@@ -273,7 +283,7 @@ struct SpaceWeatherFeedView: View {
         VStack(spacing: 0) {
             Text("NOAA storm scales")
                 .font(AppFont.regular(isPhone ? 12 : 17))
-                .foregroundColor(.white.opacity(0.55))
+                .foregroundColor(Palette.secondaryText)
                 .frame(maxWidth: .infinity)
                 .padding(.top, 12)
                 .padding(.bottom, 4)
@@ -325,7 +335,7 @@ struct SpaceWeatherFeedView: View {
         VStack(spacing: 12) {
             Image(systemName: "wifi.exclamationmark")
                 .font(.system(size: 40))
-                .foregroundColor(.white.opacity(0.6))
+                .foregroundColor(Palette.secondaryText)
             Text("Couldn't load space weather")
                 .font(AppFont.bold(isPhone ? 16 : 22))
                 .foregroundColor(.white)
@@ -342,7 +352,7 @@ struct SpaceWeatherFeedView: View {
                     .foregroundColor(.white)
                     .padding(.horizontal, 24)
                     .padding(.vertical, 12)
-                    .background(Color.black.opacity(0.3))
+                    .background(Palette.card)
                     .cornerRadius(14)
             }
         }

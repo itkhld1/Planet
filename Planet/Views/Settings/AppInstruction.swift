@@ -38,7 +38,7 @@ struct AppInstruction: View {
         OnboardingPage(
             symbol: "brain.head.profile.fill",
             title: "Test Your Knowledge",
-            body: "Answer 10 random questions drawn from a pool of over 130. Every quiz is different, so keep playing to beat your high score."
+            body: "Answer 10 random questions drawn from a pool of over 200. Every quiz is different, so keep playing to beat your high score."
         ),
         OnboardingPage(
             symbol: "plusminus.circle.fill",
@@ -57,11 +57,7 @@ struct AppInstruction: View {
     var body: some View {
         ZStack {
             // Static gradient, matching the rest of the app.
-            LinearGradient(
-                gradient: Gradient(colors: [.black, Color("GradientColor"), .purple]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            SpaceGradient()
             .ignoresSafeArea()
 
             StarFieldView(count: 80)
@@ -123,7 +119,7 @@ struct AppInstruction: View {
             if !isLastPage {
                 Button("Skip") { finish() }
                     .font(AppFont.regular(isPhone ? 15 : 22))
-                    .foregroundColor(.white.opacity(0.6))
+                    .foregroundColor(Palette.secondaryText)
                     .padding(.trailing, 24)
                     .padding(.top, 12)
                     .transition(.opacity)
@@ -145,10 +141,10 @@ struct AppInstruction: View {
                 .font(AppFont.bold(isPhone ? 17 : 24))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, isPhone ? 15 : 20)
-                .background(Color.blue)
-                .foregroundColor(.white)
+                .background(Palette.accent)
+                .foregroundColor(Palette.deepSpace)
                 .cornerRadius(30)
-                .shadow(color: .blue.opacity(0.5), radius: 20)
+                .shadow(color: Palette.accent.opacity(0.45), radius: 20)
         }
     }
 

@@ -10,7 +10,6 @@ import SwiftUI
 struct SunDetailView: View {
     let star: Star
     @State private var showDetailInfo = false
-    @State private var rotateStar = false
     private let numberOfStars = 100
 
     private var heroSize: CGFloat { deviceType() == "iPhone" ? 170 : 260 }
@@ -19,11 +18,13 @@ struct SunDetailView: View {
         ZStack {
             // Static gradient — fills the sheet immediately and never wipes in
             // from a corner (and no repeating animation to accumulate).
-            LinearGradient(
-                gradient: Gradient(colors: [Color.orange, Color.yellow.opacity(0.5), .black]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            // Deep space with the Sun's warmth glowing from the top: warm
+            // without the glare of the old orange-to-yellow wash.
+            ZStack {
+                SpaceGradient(tint: Palette.amber, tintStrength: 0.35)
+                RadialGradient(colors: [Palette.amber.opacity(0.45), Palette.warning.opacity(0.12), .clear],
+                               center: .top, startRadius: 0, endRadius: 420)
+            }
             .ignoresSafeArea()
 
             StarFieldView(count: numberOfStars)
@@ -51,17 +52,8 @@ struct SunDetailView: View {
 
     private var hero: some View {
         VStack(spacing: 14) {
-            Image(star.imageName)
-                .resizable()
-                .scaledToFit()
-                .frame(width: heroSize, height: heroSize)
-                .rotationEffect(.degrees(rotateStar ? 360 : 0))
-                .shadow(color: .orange.opacity(0.6), radius: 20)
-                .onAppear {
-                    withAnimation(.linear(duration: 40).repeatForever(autoreverses: false)) {
-                        rotateStar = true
-                    }
-                }
+            FloatingBody(imageName: star.imageName, glow: Palette.amber, size: heroSize,
+                         shadow: Palette.amber.opacity(0.6))
                 .accessibilityLabel("\(star.name.localizedBodyName) globe")
 
             Text(star.name.localizedBodyName)
@@ -82,7 +74,7 @@ struct SunDetailView: View {
             statRow(icon: "thermometer.sun.fill", label: "Surface Temperature", value: star.surfaceTemperature.localizedFromCatalog)
         }
         .padding(.vertical, 6)
-        .background(Color.black.opacity(0.35))
+        .background(Palette.card)
         .cornerRadius(18)
     }
 
@@ -114,7 +106,7 @@ struct SunDetailView: View {
             .foregroundColor(.white)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(16)
-            .background(Color.black.opacity(0.35))
+            .background(Palette.card)
             .cornerRadius(18)
     }
 

@@ -30,11 +30,7 @@ struct ComparePlanetsView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                gradient: Gradient(colors: [.black, Color("GradientColor"), .purple]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            SpaceGradient()
             .ignoresSafeArea()
 
             StarFieldView(count: 40)
@@ -87,7 +83,7 @@ struct ComparePlanetsView: View {
             if isClamped(leftBody, rightBody) {
                 Text("Not to scale — the smaller one is shown larger than it really is.")
                     .font(AppFont.regular(isPhone ? 11 : 15))
-                    .foregroundColor(.white.opacity(0.55))
+                    .foregroundColor(Palette.secondaryText)
                     .multilineTextAlignment(.center)
             }
         }
@@ -117,7 +113,7 @@ struct ComparePlanetsView: View {
         HStack(spacing: 12) {
             bodyMenu(selection: $leftName, exclude: rightName)
             Image(systemName: "arrow.left.and.right")
-                .foregroundColor(.white.opacity(0.5))
+                .foregroundColor(Palette.secondaryText)
             bodyMenu(selection: $rightName, exclude: leftName)
         }
     }
@@ -141,7 +137,7 @@ struct ComparePlanetsView: View {
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
-            .background(Color.black.opacity(0.3))
+            .background(Palette.card)
             .cornerRadius(14)
         }
     }
@@ -174,7 +170,7 @@ struct ComparePlanetsView: View {
                       l.satellitesText, r.satellitesText,
                       winner: rank(l.satelliteCount, r.satelliteCount))
         }
-        .background(Color.black.opacity(0.28))
+        .background(Palette.card)
         .cornerRadius(18)
     }
 
@@ -203,7 +199,7 @@ struct ComparePlanetsView: View {
         return VStack(spacing: 6) {
             Text(label)
                 .font(AppFont.regular(isPhone ? 12 : 17))
-                .foregroundColor(.white.opacity(0.55))
+                .foregroundColor(Palette.secondaryText)
 
             HStack {
                 Text(leftValue)
@@ -235,7 +231,7 @@ struct ComparePlanetsView: View {
 
         return HStack(alignment: .top, spacing: 10) {
             Image(systemName: "lightbulb.fill")
-                .foregroundColor(.yellow)
+                .foregroundColor(Palette.amber)
             // `String(format: "%.1f")` would print "109.2" in Western digits
             // inside otherwise-Persian text.
             Text("\(bigger) is about \(MetricFormat.decimal(ratio, maxDecimals: 1))× wider than \(smaller).")
@@ -244,7 +240,7 @@ struct ComparePlanetsView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(14)
-        .background(Color.black.opacity(0.28))
+        .background(Palette.card)
         .cornerRadius(16)
         .accessibilityElement(children: .combine)
     }

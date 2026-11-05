@@ -6,14 +6,12 @@
 //
 
 import SwiftUI
-import SceneKit
 
 struct PlanetDetailView: View {
     let planet: Planet
     @State private var showDetailInfo = false
     @State private var show3DModel = false
     @State private var showMoons = false
-    @State private var rotatePlanet = false
     private let numberOfStars = 100
 
     private var moons: [Moon] { Moon.moons(of: planet.name) }
@@ -24,11 +22,13 @@ struct PlanetDetailView: View {
         ZStack {
             // Static gradient — fills the sheet immediately and never wipes in
             // from a corner (and no repeating animation to accumulate).
-            LinearGradient(
-                gradient: Gradient(colors: [Color("D1"), Color("D2"), Color("D3"), Color("D4")]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            // Tinted with the planet's own colour, so every planet looks
+            // like itself: rust for Mars, ocean blue for Earth.
+            ZStack {
+                SpaceGradient(tint: planet.color, tintStrength: 0.6)
+                RadialGradient(colors: [planet.color.opacity(0.35), .clear],
+                               center: .top, startRadius: 0, endRadius: 380)
+            }
             .ignoresSafeArea()
 
             StarFieldView(count: numberOfStars)
@@ -45,9 +45,8 @@ struct PlanetDetailView: View {
             }
         }
         .sheet(isPresented: $show3DModel) {
-            ViewControllerWrapper(planet: planet)
-                .ignoresSafeArea()
-                .presentationDragIndicator(.visible)
+            ARPlanetView(initialPlanet: planet.name) { show3DModel = false }
+                .appLanguageEnvironment()
                 .presentationDetents([.large])
         }
         .sheet(isPresented: $showDetailInfo) {
@@ -71,17 +70,7 @@ struct PlanetDetailView: View {
 
     private var hero: some View {
         VStack(spacing: 14) {
-            Image(planet.imageName)
-                .resizable()
-                .scaledToFit()
-                .frame(width: heroSize, height: heroSize)
-                .rotationEffect(.degrees(rotatePlanet ? 360 : 0))
-                .shadow(color: .black.opacity(0.4), radius: 12)
-                .onAppear {
-                    withAnimation(.linear(duration: 40).repeatForever(autoreverses: false)) {
-                        rotatePlanet = true
-                    }
-                }
+            FloatingBody(imageName: planet.imageName, glow: planet.color, size: heroSize)
                 .accessibilityLabel("\(planet.name.localizedBodyName) globe")
 
             Text(planet.name.localizedBodyName)
@@ -111,7 +100,7 @@ struct PlanetDetailView: View {
                     value: metrics.map { MetricFormat.hours($0.dayLengthHours) } ?? planet.dayLength)
         }
         .padding(.vertical, 6)
-        .background(Color.black.opacity(0.28))
+        .background(Palette.card)
         .cornerRadius(18)
     }
 
@@ -143,7 +132,7 @@ struct PlanetDetailView: View {
             .foregroundColor(.white)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(16)
-            .background(Color.black.opacity(0.28))
+            .background(Palette.card)
             .cornerRadius(18)
     }
 
@@ -159,8 +148,8 @@ struct PlanetDetailView: View {
                     .font(AppFont.bold(deviceType() == "iPhone" ? 16 : 22))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
-                    .background(Color.blue.opacity(0.85))
-                    .foregroundColor(.white)
+                    .background(Palette.accent)
+                    .foregroundColor(Palette.deepSpace)
                     .cornerRadius(30)
             }
 

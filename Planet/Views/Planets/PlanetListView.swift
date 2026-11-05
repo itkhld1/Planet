@@ -74,17 +74,17 @@ struct PlanetListView: View {
                      ? "\(Moon.all.count) notable moons"
                      : "\(matchingMoons.count) matching")
                     .font(AppFont.regular(isPhone ? 13 : 19))
-                    .foregroundColor(.white.opacity(0.65))
+                    .foregroundColor(Palette.secondaryText)
             }
 
             Spacer(minLength: 8)
 
             Image(systemName: "chevron.right")
                 .font(.system(size: isPhone ? 14 : 20, weight: .semibold))
-                .foregroundColor(.white.opacity(0.5))
+                .foregroundColor(Palette.secondaryText)
         }
         .padding(isPhone ? 14 : 20)
-        .background(Color.black.opacity(0.28))
+        .background(Palette.card)
         .cornerRadius(20)
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isButton)
@@ -93,11 +93,7 @@ struct PlanetListView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                LinearGradient(
-                    gradient: Gradient(colors: [.black, Color("GradientColor"), .purple]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                SpaceGradient()
                 .ignoresSafeArea()
 
                 StarFieldView(count: 40)
@@ -192,17 +188,17 @@ struct PlanetListView: View {
                     .foregroundColor(.white)
                 Text(subtitle)
                     .font(AppFont.regular(isPhone ? 13 : 19))
-                    .foregroundColor(.white.opacity(0.65))
+                    .foregroundColor(Palette.secondaryText)
             }
 
             Spacer(minLength: 8)
 
             Image(systemName: "chevron.right")
                 .font(.system(size: isPhone ? 14 : 20, weight: .semibold))
-                .foregroundColor(.white.opacity(0.5))
+                .foregroundColor(Palette.secondaryText)
         }
         .padding(isPhone ? 14 : 20)
-        .background(Color.black.opacity(0.28))
+        .background(Palette.card)
         .cornerRadius(20)
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isButton)
@@ -212,7 +208,7 @@ struct PlanetListView: View {
         VStack(spacing: 12) {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 40))
-                .foregroundColor(.white.opacity(0.5))
+                .foregroundColor(Palette.secondaryText)
             Text("No matches for \"\(trimmedSearch)\"")
                 .font(AppFont.regular(isPhone ? 16 : 22))
                 .foregroundColor(.white.opacity(0.7))

@@ -11,13 +11,10 @@ import SwiftUI
 
 // MARK: - Spacecraft
 
-/// Saved look of the player's spacecraft.
+/// The looks a spacecraft can have. The player's choice is saved in
+/// `ProgressStore`.
 enum Spacecraft {
-    static let nameKey = "spacecraftName"
-    static let colorKey = "spacecraftColor"
-    static let iconKey = "spacecraftIcon"
-
-    static let colors: [Color] = [.cyan, .orange, .pink, .green, .yellow, .purple]
+    static let colors: [Color] = [Palette.accent, .orange, .pink, .green, .yellow, .purple]
 
     /// Symbol, and the direction it points in at rest (screen degrees,
     /// clockwise from east) so it can be turned to face along the route.
@@ -50,16 +47,7 @@ struct CrewMember: Codable, Identifiable, Equatable {
 }
 
 enum Crew {
-    static let storageKey = "spacecraftCrew"
     static let maxCrewmates = 3
-
-    static func decode(_ json: String) -> [CrewMember] {
-        (try? JSONDecoder().decode([CrewMember].self, from: Data(json.utf8))) ?? []
-    }
-
-    static func encode(_ crew: [CrewMember]) -> String {
-        (try? JSONEncoder().encode(crew)).flatMap { String(data: $0, encoding: .utf8) } ?? ""
-    }
 }
 
 /// Food for the flight. NASA gives each space station astronaut about
@@ -106,15 +94,15 @@ struct SpacecraftBadge: View {
 // MARK: - Editor
 
 struct SpacecraftView: View {
-    @AppStorage(Spacecraft.nameKey) private var name = ""
-    @AppStorage(Spacecraft.colorKey) private var colorIndex = 0
-    @AppStorage(Spacecraft.iconKey) private var iconIndex = 0
-    @AppStorage(Crew.storageKey) private var crewJSON = ""
-    @AppStorage("ageOnEarth") private var ageOnEarth = ""
+    @Bindable private var progress = ProgressStore.shared
+    @AppStorage(SettingsKey.ageOnEarth) private var ageOnEarth = ""
 
     private var isPhone: Bool { deviceType() == "iPhone" }
 
-    private var crew: [CrewMember] { Crew.decode(crewJSON) }
+    private var name: String { progress.spacecraftName }
+    private var colorIndex: Int { progress.spacecraftColor }
+    private var iconIndex: Int { progress.spacecraftIcon }
+    private var crew: [CrewMember] { progress.crew }
 
     var body: some View {
         ZStack {
@@ -165,16 +153,16 @@ struct SpacecraftView: View {
             Text("Name")
                 .font(AppFont.regular(isPhone ? 14 : 20))
                 .foregroundColor(.white)
-            TextField("", text: $name, prompt: Text(Spacecraft.displayName("")).foregroundColor(.white.opacity(0.4)))
+            TextField("", text: $progress.spacecraftName, prompt: Text(Spacecraft.displayName("")).foregroundColor(Palette.secondaryText))
                 .font(AppFont.bold(isPhone ? 17 : 24))
                 .foregroundColor(.white)
                 .submitLabel(.done)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 12)
-                .background(Color.black.opacity(0.3))
+                .background(Palette.card)
                 .cornerRadius(14)
                 .onChange(of: name) { _, new in
-                    if new.count > 24 { name = String(new.prefix(24)) }
+                    if new.count > 24 { progress.spacecraftName = String(new.prefix(24)) }
                 }
         }
         .padding(16)
@@ -192,7 +180,7 @@ struct SpacecraftView: View {
                 ForEach(Spacecraft.colors.indices, id: \.self) { i in
                     Button {
                         playHaptic(.light)
-                        colorIndex = i
+                        progress.spacecraftColor = i
                     } label: {
                         Circle()
                             .fill(Spacecraft.colors[i])
@@ -214,7 +202,7 @@ struct SpacecraftView: View {
                 ForEach(Spacecraft.icons.indices, id: \.self) { i in
                     Button {
                         playHaptic(.light)
-                        iconIndex = i
+                        progress.spacecraftIcon = i
                     } label: {
                         SpacecraftBadge(colorIndex: iconIndex == i ? colorIndex : -1, iconIndex: i,
                                         size: isPhone ? 40 : 54)
@@ -243,7 +231,7 @@ struct SpacecraftView: View {
             HStack(spacing: 12) {
                 Image(systemName: "person.crop.circle.fill")
                     .font(.system(size: isPhone ? 22 : 30))
-                    .foregroundColor(.cyan)
+                    .foregroundColor(Palette.accent)
                 Text("You")
                     .font(AppFont.regular(isPhone ? 15 : 21))
                     .foregroundColor(.white)
@@ -259,7 +247,7 @@ struct SpacecraftView: View {
                     } label: {
                         Text("Add your age")
                             .font(AppFont.bold(isPhone ? 14 : 20))
-                            .foregroundColor(.cyan)
+                            .foregroundColor(Palette.accent)
                     }
                 }
             }
@@ -275,23 +263,21 @@ struct SpacecraftView: View {
             if crew.count < Crew.maxCrewmates {
                 Button {
                     playHaptic(.light)
-                    var list = crew
-                    list.append(CrewMember(name: "", age: 30))
-                    crewJSON = Crew.encode(list)
+                    progress.crew.append(CrewMember(name: "", age: 30))
                 } label: {
                     Label("Add a crewmate", systemImage: "plus.circle.fill")
                         .font(AppFont.bold(isPhone ? 15 : 21))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
-                        .background(Color.black.opacity(0.3))
+                        .background(Palette.card)
                         .cornerRadius(14)
                 }
             }
 
             Text("Everyone on board needs about 1.7 kg of food a day, and you'll see how old they are when you arrive.")
                 .font(AppFont.regular(isPhone ? 12 : 17))
-                .foregroundColor(.white.opacity(0.5))
+                .foregroundColor(Palette.secondaryText)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(16)
@@ -305,7 +291,7 @@ struct SpacecraftView: View {
                 .foregroundColor(.white.opacity(0.7))
                 .frame(width: isPhone ? 22 : 30)
             TextField("", text: binding(member, \.name),
-                      prompt: Text("Crewmate's name").foregroundColor(.white.opacity(0.4)))
+                      prompt: Text("Crewmate's name").foregroundColor(Palette.secondaryText))
                 .font(AppFont.regular(isPhone ? 15 : 21))
                 .foregroundColor(.white)
                 .submitLabel(.done)
@@ -320,7 +306,7 @@ struct SpacecraftView: View {
             .fixedSize()
             Button {
                 playHaptic(.light)
-                crewJSON = Crew.encode(crew.filter { $0.id != member.id })
+                progress.crew.removeAll { $0.id == member.id }
             } label: {
                 Image(systemName: "minus.circle.fill")
                     .foregroundColor(.red.opacity(0.8))
@@ -338,10 +324,8 @@ struct SpacecraftView: View {
         Binding(
             get: { (crew.first { $0.id == member.id } ?? member)[keyPath: field] },
             set: { value in
-                var list = crew
-                if let i = list.firstIndex(where: { $0.id == member.id }) {
-                    list[i][keyPath: field] = value
-                    crewJSON = Crew.encode(list)
+                if let i = progress.crew.firstIndex(where: { $0.id == member.id }) {
+                    progress.crew[i][keyPath: field] = value
                 }
             }
         )

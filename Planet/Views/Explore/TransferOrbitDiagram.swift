@@ -43,8 +43,8 @@ struct TransferOrbitDiagram: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     // The player's own spacecraft: its colour paints the trail, its icon flies.
-    @AppStorage(Spacecraft.colorKey) private var craftColorIndex = 0
-    @AppStorage(Spacecraft.iconKey) private var craftIconIndex = 0
+    private var craftColorIndex: Int { ProgressStore.shared.spacecraftColor }
+    private var craftIconIndex: Int { ProgressStore.shared.spacecraftIcon }
 
     private var isPhone: Bool { deviceType() == "iPhone" }
     private var travelDays: Double { transfer.travelDays }
@@ -77,7 +77,7 @@ struct TransferOrbitDiagram: View {
 
             Text("Distances not to scale")
                 .font(AppFont.regular(isPhone ? 11 : 15))
-                .foregroundColor(.white.opacity(0.55))
+                .foregroundColor(Palette.secondaryText)
         }
         // A spatial diagram: never mirror it for right-to-left languages.
         .environment(\.layoutDirection, .leftToRight)
@@ -160,14 +160,14 @@ struct TransferOrbitDiagram: View {
                 if i == 0 { flown.move(to: p) } else { flown.addLine(to: p) }
             }
         }
-        ctx.stroke(route, with: .color(.cyan.opacity(0.35)), style: StrokeStyle(lineWidth: 1.5, dash: [4, 4]))
+        ctx.stroke(route, with: .color(Palette.accent.opacity(0.35)), style: StrokeStyle(lineWidth: 1.5, dash: [4, 4]))
         ctx.stroke(flown, with: .color(Spacecraft.color(craftColorIndex)), style: StrokeStyle(lineWidth: 2, lineCap: .round))
 
         // Arrival marker: green when the target will be there, orange when
         // not, white when that's still a secret.
         let arrival = point(departAngle + transfer.sweptAngle, s(targetRadius), center: center)
         let ring: CGFloat = planetSize + 10
-        let ringColor: Color = isAligned.map { $0 ? .green : .orange } ?? .white
+        let ringColor: Color = isAligned.map { $0 ? Palette.success : Palette.warning } ?? .white
         ctx.stroke(Path(ellipseIn: CGRect(x: arrival.x - ring / 2, y: arrival.y - ring / 2, width: ring, height: ring)),
                    with: .color(ringColor.opacity(0.8)),
                    style: StrokeStyle(lineWidth: 1.5, dash: [3, 3]))

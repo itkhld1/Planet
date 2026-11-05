@@ -27,9 +27,7 @@ struct MissionSummary {
 struct MissionShareCard: View {
     let summary: MissionSummary
 
-    @AppStorage(Spacecraft.nameKey) private var craftName = ""
-    @AppStorage(Spacecraft.colorKey) private var craftColor = 0
-    @AppStorage(Spacecraft.iconKey) private var craftIcon = 0
+    private var progress: ProgressStore { .shared }
 
     static let width: CGFloat = 360
 
@@ -51,8 +49,8 @@ struct MissionShareCard: View {
                     .font(AppFont.regular(14))
                     .foregroundColor(.white.opacity(0.7))
                 HStack(spacing: 8) {
-                    SpacecraftBadge(colorIndex: craftColor, iconIndex: craftIcon, size: 22)
-                    Text("Aboard \(Spacecraft.displayName(craftName))")
+                    SpacecraftBadge(colorIndex: progress.spacecraftColor, iconIndex: progress.spacecraftIcon, size: 22)
+                    Text("Aboard \(progress.spacecraftDisplayName)")
                         .font(AppFont.bold(13))
                         .foregroundColor(.white.opacity(0.85))
                 }
@@ -80,11 +78,11 @@ struct MissionShareCard: View {
 
             Text("Planned with Planet")
                 .font(AppFont.regular(12))
-                .foregroundColor(.white.opacity(0.55))
+                .foregroundColor(Palette.secondaryText)
         }
         .padding(20)
         .frame(width: Self.width)
-        .background(AppGradientBackground(stars: 30))
+        .background(AppGradientBackground(stars: 30, animated: false))
     }
 
     private var divider: some View {
@@ -148,9 +146,7 @@ struct ChallengeShareSummary {
 struct ChallengeShareCard: View {
     let summary: ChallengeShareSummary
 
-    @AppStorage(Spacecraft.nameKey) private var craftName = ""
-    @AppStorage(Spacecraft.colorKey) private var craftColor = 0
-    @AppStorage(Spacecraft.iconKey) private var craftIcon = 0
+    private var progress: ProgressStore { .shared }
 
     var body: some View {
         VStack(spacing: 14) {
@@ -162,8 +158,8 @@ struct ChallengeShareCard: View {
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
                 HStack(spacing: 8) {
-                    SpacecraftBadge(colorIndex: craftColor, iconIndex: craftIcon, size: 22)
-                    Text("\(Spacecraft.displayName(craftName)) reached \(summary.target.localizedBodyName) in \(MissionFormat.duration(summary.transfer.travelDays))")
+                    SpacecraftBadge(colorIndex: progress.spacecraftColor, iconIndex: progress.spacecraftIcon, size: 22)
+                    Text("\(progress.spacecraftDisplayName) reached \(summary.target.localizedBodyName) in \(MissionFormat.duration(summary.transfer.travelDays))")
                         .font(AppFont.regular(14))
                         .foregroundColor(.white.opacity(0.85))
                         .multilineTextAlignment(.center)
@@ -185,11 +181,11 @@ struct ChallengeShareCard: View {
 
             Text("Planned with Planet")
                 .font(AppFont.regular(12))
-                .foregroundColor(.white.opacity(0.55))
+                .foregroundColor(Palette.secondaryText)
         }
         .padding(20)
         .frame(width: MissionShareCard.width)
-        .background(AppGradientBackground(stars: 30))
+        .background(AppGradientBackground(stars: 30, animated: false))
     }
 
     private func row(_ title: LocalizedStringKey, _ value: String) -> some View {

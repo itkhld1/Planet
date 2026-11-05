@@ -16,28 +16,32 @@ import Combine
 
 /// Owns the ARView so SwiftUI buttons can drive it.
 @MainActor
-final class ARPlanetController: ObservableObject {
-    let arView = ARView(frame: .zero, cameraMode: .ar, automaticallyConfigureSession: false)
-
-    @Published var isLoading = false
-    @Published var placedCount = 0
-    @Published var errorMessage: String?
-
-    private var anchors: [AnchorEntity] = []
-    private var loadRequest: AnyCancellable?
-    private var isRunning = false
-
-    static var isSupported: Bool { ARWorldTrackingConfiguration.isSupported }
-
-    init() {
+@Observable
+final class ARPlanetController {
+    /// Built on first use: `@State` creates a controller every time the view
+    /// struct is initialised and keeps only the first, so the init must stay
+    /// cheap — no camera view for the discarded ones.
+    @ObservationIgnored private(set) lazy var arView: ARView = {
+        let view = ARView(frame: .zero, cameraMode: .ar, automaticallyConfigureSession: false)
         let coaching = ARCoachingOverlayView()
-        coaching.session = arView.session
+        coaching.session = view.session
         coaching.goal = .horizontalPlane
         coaching.activatesAutomatically = true
         coaching.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        arView.addSubview(coaching)
-        arView.environment.lighting.intensityExponent = 1
-    }
+        view.addSubview(coaching)
+        view.environment.lighting.intensityExponent = 1
+        return view
+    }()
+
+    var isLoading = false
+    var placedCount = 0
+    var errorMessage: String?
+
+    @ObservationIgnored private var anchors: [AnchorEntity] = []
+    @ObservationIgnored private var loadRequest: AnyCancellable?
+    @ObservationIgnored private var isRunning = false
+
+    static var isSupported: Bool { ARWorldTrackingConfiguration.isSupported }
 
     func start() {
         guard Self.isSupported, !isRunning else { return }
@@ -175,8 +179,17 @@ private struct ARContainer: UIViewRepresentable {
 // MARK: - Screen
 
 struct ARPlanetView: View {
-    @StateObject private var controller = ARPlanetController()
-    @State private var selected = "Earth"
+    @State private var controller = ARPlanetController()
+    @State private var selected: String
+
+    /// Set when shown as a sheet (from a planet's detail screen): drag-to-dismiss
+    /// fights the AR drag gesture, so the screen gets its own close button.
+    private let onClose: (() -> Void)?
+
+    init(initialPlanet: String = "Earth", onClose: (() -> Void)? = nil) {
+        _selected = State(initialValue: initialPlanet)
+        self.onClose = onClose
+    }
 
     /// Every model in the bundle, in order from the Sun.
     private let choices: [Planet] = planets.filter { !$0.planet3DModel.isEmpty }
@@ -209,6 +222,25 @@ struct ARPlanetView: View {
             .onDisappear { controller.pause() }
 
             VStack {
+                if let onClose {
+                    HStack {
+                        Spacer()
+                        Button {
+                            playHaptic(.light)
+                            onClose()
+                        } label: {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 15, weight: .bold))
+                                .foregroundStyle(.white)
+                                .frame(width: 36, height: 36)
+                                .background(Circle().fill(.ultraThinMaterial))
+                                .environment(\.colorScheme, .dark)
+                        }
+                        .accessibilityLabel("Close")
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                }
                 hint
                 Spacer()
                 if controller.placedCount > 0 {

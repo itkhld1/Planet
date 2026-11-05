@@ -34,7 +34,7 @@ Explore the solar system in 3D
 ### Promotional text (170 char max — editable without a new build)
 
 ```
-Tap any planet to explore it in 3D, test yourself with 135 questions, and find out what you'd weigh on Jupiter. Learning about space, made to be played with.
+Tap any planet to explore it in 3D, test yourself with 200 questions, and find out what you'd weigh on Jupiter. Learning about space, made to be played with.
 ```
 
 ### Description
@@ -57,7 +57,7 @@ COMPARE
 Put two worlds side by side and watch the scale land. Diameter, distance, day length, year length, gravity, and moons — with the planets drawn to their true relative size. Line Earth up against the Sun and see what 109 times wider actually looks like.
 
 TEST YOURSELF
-135 questions, ten per round, drawn fresh every time. Every answer comes with a one-line explanation of why it's right, so a wrong guess teaches you something. Miss a few and you'll get them back at the end, with the reasons, to review.
+200 questions, ten per round, drawn fresh every time. Every answer comes with a one-line explanation of why it's right, so a wrong guess teaches you something. Miss a few and you'll get them back at the end, with the reasons, to review.
 
 WEIGH IN, ANYWHERE
 Enter your weight and see what you'd weigh on every other planet — in kilograms or pounds. Enter your age and find out how many laps of the Sun you'd have made on Mars, or Neptune.

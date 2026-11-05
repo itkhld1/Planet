@@ -159,7 +159,7 @@ struct RealLaunchWindow: Identifiable {
 
 /// The big "Today's Mission" card at the top of Mission Control.
 struct DailyMissionCard: View {
-    @AppStorage(ChallengeProgress.storageKey) private var starsJSON = ""
+    private var progress: ProgressStore { .shared }
     private var isPhone: Bool { deviceType() == "iPhone" }
 
     var body: some View {
@@ -167,7 +167,7 @@ struct DailyMissionCard: View {
         // midnight — stay current while the screen is open.
         TimelineView(.periodic(from: .now, by: 60)) { context in
             let plan = DailyMissionPlan(date: context.date)
-            let stars = ChallengeProgress.decode(starsJSON)
+            let stars = progress.challengeStars
             NavigationLink {
                 MissionChallengeView(challenges: [plan.challenge])
             } label: {
@@ -199,7 +199,7 @@ struct DailyMissionCard: View {
                         .foregroundColor(.white)
                     Text(verbatim: "\(plan.origin.localizedBodyName) → \(plan.target.localizedBodyName)")
                         .font(AppFont.regular(isPhone ? 13 : 18))
-                        .foregroundColor(.white.opacity(0.6))
+                        .foregroundColor(Palette.secondaryText)
                 }
 
                 Spacer(minLength: 4)
@@ -207,7 +207,7 @@ struct DailyMissionCard: View {
                 StarRow(earned: earned, size: isPhone ? 13 : 17)
                 Image(systemName: "chevron.forward")
                     .font(.system(size: isPhone ? 12 : 16, weight: .semibold))
-                    .foregroundColor(.white.opacity(0.4))
+                    .foregroundColor(Palette.secondaryText)
             }
 
             Divider().overlay(Color.white.opacity(0.15))
@@ -226,12 +226,12 @@ struct DailyMissionCard: View {
                 }
             }
             .font(AppFont.regular(isPhone ? 12 : 17))
-            .foregroundColor(.white.opacity(0.6))
+            .foregroundColor(Palette.secondaryText)
         }
         .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 18)
-                .fill(Color.black.opacity(0.28))
+                .fill(Palette.card)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 18)
@@ -269,7 +269,7 @@ struct RealWindowsCard: View {
 
             Text("When Earth and each planet really line up for the cheapest trip. Tap one to plan it.")
                 .font(AppFont.regular(isPhone ? 12 : 17))
-                .foregroundColor(.white.opacity(0.5))
+                .foregroundColor(Palette.secondaryText)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -290,13 +290,13 @@ struct RealWindowsCard: View {
                     .foregroundColor(.white)
                 Text(w.bestDay.formatted(.dateTime.day().month(.wide).year().locale(AppLanguage.locale)))
                     .font(AppFont.regular(isPhone ? 12 : 17))
-                    .foregroundColor(.white.opacity(0.5))
+                    .foregroundColor(Palette.secondaryText)
             }
             Spacer(minLength: 8)
             Group {
                 if w.isOpen {
                     Label("Open now", systemImage: "circle.fill")
-                        .foregroundColor(.green)
+                        .foregroundColor(Palette.success)
                 } else {
                     Text("In \(MissionFormat.duration(days))")
                         .foregroundColor(.white.opacity(0.8))
@@ -306,7 +306,7 @@ struct RealWindowsCard: View {
             .labelStyle(OpenDotLabelStyle())
             Image(systemName: "chevron.forward")
                 .font(.system(size: isPhone ? 12 : 16, weight: .semibold))
-                .foregroundColor(.white.opacity(0.4))
+                .foregroundColor(Palette.secondaryText)
         }
         .padding(.vertical, 10)
         .padding(.horizontal, 12)

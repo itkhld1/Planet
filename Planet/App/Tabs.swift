@@ -46,7 +46,7 @@ struct Tabs: View {
             }
             .toolbarBackground(.hidden, for: .tabBar)
         }
-        .tint(.cyan)
+        .tint(Palette.accent)
         .onChange(of: selectedTab) {
             playHaptic()
         }
@@ -60,23 +60,27 @@ struct Tabs: View {
 /// navigation bar, and dark rounded cards with a labelled header.
 struct ExploreTabView: View {
     private var isPhone: Bool { deviceType() == "iPhone" }
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var cardsShown = false
 
     var body: some View {
         NavigationStack {
             ZStack {
-                LinearGradient(
-                    gradient: Gradient(colors: [.black, Color("GradientColor"), .purple]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                SpaceGradient()
                 .ignoresSafeArea()
 
                 StarFieldView(count: 40)
 
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 18) {
-                        ForEach(AppFeature.Section.allCases) { section in
+                        ForEach(Array(AppFeature.Section.allCases.enumerated()), id: \.element.id) { index, section in
                             card(for: section)
+                                // Cards rise in one after another the first
+                                // time the tab opens.
+                                .opacity(cardsShown ? 1 : 0)
+                                .offset(y: cardsShown ? 0 : 24)
+                                .animation(reduceMotion ? nil : .spring(response: 0.55, dampingFraction: 0.8).delay(0.08 * Double(index)),
+                                           value: cardsShown)
                         }
                     }
                     .padding()
@@ -84,6 +88,7 @@ struct ExploreTabView: View {
                     .frame(maxWidth: .infinity)
                 }
             }
+            .onAppear { cardsShown = true }
             .navigationTitle("Explore")
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(.hidden, for: .navigationBar)
@@ -109,7 +114,7 @@ struct ExploreTabView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
-        .background(Color.black.opacity(0.28))
+        .background(Palette.card)
         .cornerRadius(18)
     }
 
@@ -132,7 +137,7 @@ struct ExploreTabView: View {
                     .foregroundColor(.white)
                 Text(feature.subtitle)
                     .font(AppFont.regular(isPhone ? 12 : 17))
-                    .foregroundColor(.white.opacity(0.5))
+                    .foregroundColor(Palette.secondaryText)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
             }
@@ -141,7 +146,7 @@ struct ExploreTabView: View {
 
             Image(systemName: "chevron.forward")
                 .font(.system(size: isPhone ? 12 : 16, weight: .semibold))
-                .foregroundColor(.white.opacity(0.4))
+                .foregroundColor(Palette.secondaryText)
         }
         .padding(.vertical, 10)
         .padding(.horizontal, 12)

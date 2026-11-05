@@ -53,11 +53,7 @@ struct MoonsView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                gradient: Gradient(colors: [.black, Color("GradientColor"), .purple]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            SpaceGradient()
             .ignoresSafeArea()
 
             StarFieldView(count: 40)
@@ -115,7 +111,7 @@ struct MoonsView: View {
                     .foregroundColor(.white)
                 Text(moon.localizedTagline)
                     .font(AppFont.regular(isPhone ? 13 : 18))
-                    .foregroundColor(.white.opacity(0.65))
+                    .foregroundColor(Palette.secondaryText)
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -124,10 +120,10 @@ struct MoonsView: View {
 
             Image(systemName: "chevron.right")
                 .font(.system(size: isPhone ? 13 : 18, weight: .semibold))
-                .foregroundColor(.white.opacity(0.5))
+                .foregroundColor(Palette.secondaryText)
         }
         .padding(isPhone ? 14 : 18)
-        .background(Color.black.opacity(0.28))
+        .background(Palette.card)
         .cornerRadius(18)
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isButton)
@@ -137,7 +133,7 @@ struct MoonsView: View {
         VStack(spacing: 12) {
             Image(systemName: "moon.stars")
                 .font(.system(size: 40))
-                .foregroundColor(.white.opacity(0.5))
+                .foregroundColor(Palette.secondaryText)
             Text(trimmedSearch.isEmpty
                  ? "No moons to show."
                  : "No moons match \"\(trimmedSearch)\"")
@@ -181,11 +177,7 @@ struct MoonDetailView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                gradient: Gradient(colors: [.black, Color("GradientColor"), .purple]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            SpaceGradient()
             .ignoresSafeArea()
 
             StarFieldView(count: 60)
@@ -201,7 +193,7 @@ struct MoonDetailView: View {
                             .foregroundColor(.white)
                         Text("Orbits \(moon.planet.localizedBodyName)")
                             .font(AppFont.regular(isPhone ? 14 : 20))
-                            .foregroundColor(.white.opacity(0.65))
+                            .foregroundColor(Palette.secondaryText)
                     }
 
                     statsCard
@@ -212,7 +204,7 @@ struct MoonDetailView: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(16)
-                        .background(Color.black.opacity(0.28))
+                        .background(Palette.card)
                         .cornerRadius(18)
 
                     factsCard
@@ -241,7 +233,7 @@ struct MoonDetailView: View {
         .font(AppFont.regular(isPhone ? 15 : 22))
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
-        .background(Color.black.opacity(0.28))
+        .background(Palette.card)
         .cornerRadius(18)
         .accessibilityElement(children: .combine)
     }
@@ -256,7 +248,7 @@ struct MoonDetailView: View {
                 HStack(alignment: .top, spacing: 10) {
                     Image(systemName: "sparkle")
                         .font(.system(size: isPhone ? 12 : 16))
-                        .foregroundColor(.yellow)
+                        .foregroundColor(Palette.amber)
                         .padding(.top, 3)
                     Text(fact)
                         .font(AppFont.regular(isPhone ? 14 : 19))
@@ -268,7 +260,7 @@ struct MoonDetailView: View {
             }
         }
         .padding(16)
-        .background(Color.black.opacity(0.28))
+        .background(Palette.card)
         .cornerRadius(18)
     }
 }

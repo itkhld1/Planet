@@ -47,7 +47,7 @@ struct SpeedSlider: View {
                 // Fill from the slow end to the thumb
                 let fillWidth = CGFloat(position) * width
                 Capsule()
-                    .fill(LinearGradient(colors: [.cyan.opacity(0.45), .cyan],
+                    .fill(LinearGradient(colors: [Palette.accent.opacity(0.45), Palette.accent],
                                          startPoint: rtl ? .trailing : .leading,
                                          endPoint: rtl ? .leading : .trailing))
                     .frame(width: fillWidth, height: trackHeight)
@@ -57,7 +57,7 @@ struct SpeedSlider: View {
                 ForEach(marks) { mark in
                     let reached = position >= mark.position - 0.001
                     Circle()
-                        .fill(reached ? Color.cyan : Color.white.opacity(0.45))
+                        .fill(reached ? Palette.accent : Color.white.opacity(0.45))
                         .frame(width: 6, height: 6)
                         .position(x: x(mark.position), y: midY)
 
@@ -76,7 +76,7 @@ struct SpeedSlider: View {
                 Circle()
                     .fill(Color.white)
                     .frame(width: thumbSize, height: thumbSize)
-                    .shadow(color: .cyan.opacity(0.8), radius: isDragging ? 8 : 4)
+                    .shadow(color: Palette.accent.opacity(0.8), radius: isDragging ? 8 : 4)
                     .scaleEffect(isDragging ? 1.25 : 1)
                     .position(x: x(position), y: midY)
 
@@ -89,7 +89,7 @@ struct SpeedSlider: View {
                         .foregroundColor(.white)
                         .padding(.vertical, 4)
                         .padding(.horizontal, 8)
-                        .background(Color.cyan.opacity(0.85), in: Capsule())
+                        .background(Palette.accent.opacity(0.85), in: Capsule())
                         .fixedSize()
                         .position(x: min(max(x(position), 30), width - 30), y: -16)
                         .transition(.opacity.combined(with: .scale(scale: 0.8, anchor: .bottom)))

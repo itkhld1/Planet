@@ -10,7 +10,7 @@ struct SettingsView: View {
     @AppStorage(SettingsKey.hapticsEnabled) private var hapticsEnabled = true
     @AppStorage(SettingsKey.soundEffectsEnabled) private var soundEffectsEnabled = true
     @AppStorage(SettingsKey.hasSeenInstruction) private var hasSeenInstruction = false
-    @AppStorage(SettingsKey.highScore) private var highScore = 0
+    private var highScore: Int { ProgressStore.shared.quizHighScore }
     @AppStorage(AppLanguage.storageKey) private var language = AppLanguage.system.rawValue
 
     @Environment(\.dismiss) private var dismiss
@@ -29,11 +29,7 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                LinearGradient(
-                    gradient: Gradient(colors: [.black, Color("GradientColor"), .purple]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                SpaceGradient()
                 .ignoresSafeArea()
 
                 StarFieldView(count: 40)
@@ -48,7 +44,7 @@ struct SettingsView: View {
 
                         Text(appVersion)
                             .font(.caption2)
-                            .foregroundColor(.white.opacity(0.5))
+                            .foregroundColor(Palette.secondaryText)
                             .padding(.top, 6)
                     }
                     .padding()
@@ -62,7 +58,7 @@ struct SettingsView: View {
         }
         .alert("Reset High Score?", isPresented: $showResetScoreAlert) {
             Button("Reset", role: .destructive) {
-                highScore = 0
+                ProgressStore.shared.resetQuizHighScore()
                 playNotificationHaptic(.success)
             }
             Button("Cancel", role: .cancel) { }
@@ -89,7 +85,7 @@ struct SettingsView: View {
 
                 Text("Used by the weight calculator.")
                     .font(AppFont.regular(isPhone ? 12 : 17))
-                    .foregroundColor(.white.opacity(0.5))
+                    .foregroundColor(Palette.secondaryText)
             }
         }
     }
@@ -110,7 +106,7 @@ struct SettingsView: View {
 
                 Text("Vibrate when you tap planets, answers and buttons.")
                     .font(AppFont.regular(isPhone ? 12 : 17))
-                    .foregroundColor(.white.opacity(0.5))
+                    .foregroundColor(Palette.secondaryText)
 
                 Toggle(isOn: $soundEffectsEnabled) {
                     Text("Sound effects")
@@ -125,7 +121,7 @@ struct SettingsView: View {
 
                 Text("Countdown and launch sounds in Mission Control. Silent when your ringer is off.")
                     .font(AppFont.regular(isPhone ? 12 : 17))
-                    .foregroundColor(.white.opacity(0.5))
+                    .foregroundColor(Palette.secondaryText)
             }
         }
     }
@@ -140,7 +136,7 @@ struct SettingsView: View {
                     Spacer()
                     Text("\(highScore) / 10")
                         .font(AppFont.bold(isPhone ? 15 : 21))
-                        .foregroundColor(.yellow)
+                        .foregroundColor(Palette.amber)
                 }
                 .accessibilityElement(children: .combine)
 
@@ -174,7 +170,7 @@ struct SettingsView: View {
 
                 Text("Changes the whole app right away.")
                     .font(AppFont.regular(isPhone ? 12 : 17))
-                    .foregroundColor(.white.opacity(0.5))
+                    .foregroundColor(Palette.secondaryText)
             }
         }
     }
@@ -236,7 +232,7 @@ struct SettingsView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
-        .background(Color.black.opacity(0.28))
+        .background(Palette.card)
         .cornerRadius(18)
     }
 
@@ -248,7 +244,7 @@ struct SettingsView: View {
             Spacer()
             Image(systemName: "chevron.right")
                 .font(.system(size: isPhone ? 12 : 16, weight: .semibold))
-                .foregroundColor(.white.opacity(0.4))
+                .foregroundColor(Palette.secondaryText)
         }
         .font(AppFont.regular(isPhone ? 15 : 21))
         .foregroundColor(.white)

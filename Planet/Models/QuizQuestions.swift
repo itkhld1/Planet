@@ -852,5 +852,401 @@ let questionsEn: [QuizQuestion] = [
         options: ["An astronomical unit", "A light year", "A parsec", "A solar mile"],
         correctIndex: 0,
         explanation: "One astronomical unit (AU) is about 150 million km, the average Earth-Sun distance."
+    ),
+    QuizQuestion(
+        question: "How long does the Moon take to orbit Earth?",
+        options: ["About 7 days", "About 27 days", "About 90 days", "About 365 days"],
+        correctIndex: 1,
+        explanation: "The Moon completes one orbit in about 27.3 days; from one full moon to the next takes about 29.5 days, because Earth moves along its own orbit meanwhile."
+    ),
+    QuizQuestion(
+        question: "Why do we always see the same side of the Moon?",
+        options: ["It spins once for every orbit (tidal locking)", "It doesn't spin at all", "Earth's shadow hides the other side", "The far side is too dark to see"],
+        correctIndex: 0,
+        explanation: "Earth's gravity slowed the Moon's spin until one rotation takes exactly one orbit, so the same face always points at us."
+    ),
+    QuizQuestion(
+        question: "What mainly causes ocean tides on Earth?",
+        options: ["Wind", "Earth's rotation alone", "Underwater volcanoes", "The Moon's gravity"],
+        correctIndex: 3,
+        explanation: "The Moon's gravity pulls the oceans into two bulges; the Sun adds a smaller pull, making extra-high tides at new and full moon."
+    ),
+    QuizQuestion(
+        question: "About how far away is the Moon?",
+        options: ["38,000 km", "3.8 million km", "384,000 km", "150 million km"],
+        correctIndex: 2,
+        explanation: "On average the Moon is about 384,400 km away; you could line up about 30 Earths in that gap."
+    ),
+    QuizQuestion(
+        question: "What happens during a lunar eclipse?",
+        options: ["The Moon blocks the Sun", "Earth's shadow falls on the Moon", "The Moon passes behind the Sun", "Clouds cover the Moon"],
+        correctIndex: 1,
+        explanation: "When Earth sits exactly between the Sun and the Moon, its shadow falls on the Moon, often turning it a coppery red."
+    ),
+    QuizQuestion(
+        question: "How long does sunlight take to reach Earth?",
+        options: ["About 8 minutes", "About 8 seconds", "About 1 hour", "About 1 day"],
+        correctIndex: 0,
+        explanation: "Light covers the 150 million km from the Sun in about 8 minutes 20 seconds, so we always see the Sun as it was a few minutes ago."
+    ),
+    QuizQuestion(
+        question: "Who was the first person to walk on the Moon?",
+        options: ["Buzz Aldrin", "Yuri Gagarin", "Michael Collins", "Neil Armstrong"],
+        correctIndex: 3,
+        explanation: "Neil Armstrong stepped onto the Moon on 20 July 1969 during Apollo 11, followed minutes later by Buzz Aldrin."
+    ),
+    QuizQuestion(
+        question: "What are the dark, flat plains on the Moon called?",
+        options: ["Craters", "Highlands", "Maria, or seas", "Rilles"],
+        correctIndex: 2,
+        explanation: "They're ancient lava flows. Early astronomers mistook them for seas, so they're called maria, Latin for seas."
+    ),
+    QuizQuestion(
+        question: "The Moon is slowly drifting away from Earth. By how much each year?",
+        options: ["About 3.8 m", "About 3.8 cm", "About 38 km", "It isn't moving away"],
+        correctIndex: 1,
+        explanation: "Tides pass energy to the Moon, pushing it about 3.8 cm farther away each year, roughly as fast as fingernails grow."
+    ),
+    QuizQuestion(
+        question: "What causes the auroras, the northern and southern lights?",
+        options: ["Charged particles from the Sun hitting the atmosphere", "Moonlight reflecting off polar ice", "Lightning high in the sky", "City lights bouncing off clouds"],
+        correctIndex: 0,
+        explanation: "Earth's magnetic field steers charged particles from the solar wind toward the poles, where they make the upper atmosphere glow."
+    ),
+    QuizQuestion(
+        question: "What was the first artificial satellite?",
+        options: ["Explorer 1", "Vostok 1", "Hubble", "Sputnik 1"],
+        correctIndex: 3,
+        explanation: "The Soviet Union launched Sputnik 1 on 4 October 1957, starting the Space Age."
+    ),
+    QuizQuestion(
+        question: "Who was the first human in space?",
+        options: ["Neil Armstrong", "Alan Shepard", "Yuri Gagarin", "Valentina Tereshkova"],
+        correctIndex: 2,
+        explanation: "Yuri Gagarin orbited Earth once aboard Vostok 1 on 12 April 1961; the flight lasted 108 minutes."
+    ),
+    QuizQuestion(
+        question: "Who was the first woman in space?",
+        options: ["Sally Ride", "Valentina Tereshkova", "Mae Jemison", "Peggy Whitson"],
+        correctIndex: 1,
+        explanation: "Valentina Tereshkova orbited Earth 48 times aboard Vostok 6 in June 1963."
+    ),
+    QuizQuestion(
+        question: "Which spacecraft is the farthest human-made object from Earth?",
+        options: ["Voyager 1", "Voyager 2", "New Horizons", "Pioneer 10"],
+        correctIndex: 0,
+        explanation: "Launched in 1977, Voyager 1 is more than 24 billion km away. It left the heliosphere in 2012 and is still sending data."
+    ),
+    QuizQuestion(
+        question: "What do the Voyager probes carry in case aliens ever find them?",
+        options: ["A map of every city on Earth", "Seeds of Earth's plants", "A copy of every book", "A golden record of Earth's sounds and images"],
+        correctIndex: 3,
+        explanation: "Each Voyager carries a gold-plated record with greetings in 55 languages, music, and sounds and pictures of life on Earth."
+    ),
+    QuizQuestion(
+        question: "Which space telescope, launched in 2021, sees mainly in infrared light?",
+        options: ["Hubble Space Telescope", "Kepler", "James Webb Space Telescope", "Chandra"],
+        correctIndex: 2,
+        explanation: "Webb's 6.5 m gold-coated mirror sees infrared light, letting it look through dust and back to some of the first galaxies."
+    ),
+    QuizQuestion(
+        question: "In what year was the Hubble Space Telescope launched?",
+        options: ["1975", "1990", "2001", "2010"],
+        correctIndex: 1,
+        explanation: "Hubble was carried up by the Space Shuttle in 1990 and, thanks to five servicing missions, is still working."
+    ),
+    QuizQuestion(
+        question: "About how high above Earth does the International Space Station orbit?",
+        options: ["About 400 km", "About 40 km", "About 4,000 km", "About 36,000 km"],
+        correctIndex: 0,
+        explanation: "The ISS flies about 400 km up, close enough to be seen with the naked eye as a bright moving dot."
+    ),
+    QuizQuestion(
+        question: "How long does the International Space Station take to circle Earth once?",
+        options: ["About 24 hours", "About 12 hours", "About 7 days", "About 90 minutes"],
+        correctIndex: 3,
+        explanation: "Travelling at about 28,000 km/h, the station laps Earth about 16 times a day, so its crew sees 16 sunrises daily."
+    ),
+    QuizQuestion(
+        question: "Which rover landed in Mars's Jezero Crater in 2021?",
+        options: ["Curiosity", "Opportunity", "Perseverance", "Sojourner"],
+        correctIndex: 2,
+        explanation: "Perseverance is collecting rock samples from an ancient river delta, searching for signs of past microbial life."
+    ),
+    QuizQuestion(
+        question: "Which NASA lander touched down on Mars in 1976 and worked there for six years?",
+        options: ["Mariner 4", "Viking 1", "Pathfinder", "Spirit"],
+        correctIndex: 1,
+        explanation: "Viking 1 landed in July 1976 and kept working for over six years, sending back the first clear pictures from the Martian surface."
+    ),
+    QuizQuestion(
+        question: "Which spacecraft flew past all four giant planets?",
+        options: ["Voyager 2", "Voyager 1", "Cassini", "Galileo"],
+        correctIndex: 0,
+        explanation: "Voyager 2 used a rare line-up of the planets to visit Jupiter, Saturn, Uranus and Neptune between 1979 and 1989."
+    ),
+    QuizQuestion(
+        question: "How did the Cassini mission end in 2017?",
+        options: ["It landed on Titan", "It flew out of the Solar System", "It crashed into Jupiter", "It dived into Saturn"],
+        correctIndex: 3,
+        explanation: "Low on fuel, Cassini was steered into Saturn so it could never contaminate moons like Enceladus that might hold life."
+    ),
+    QuizQuestion(
+        question: "Which country landed Chandrayaan-3 near the Moon's south pole in 2023?",
+        options: ["China", "Japan", "India", "Russia"],
+        correctIndex: 2,
+        explanation: "India became the first country to land near the lunar south pole, where water ice may hide in shadowed craters."
+    ),
+    QuizQuestion(
+        question: "What is NASA's Artemis program working toward?",
+        options: ["Landing on Venus", "Returning humans to the Moon", "Mining asteroids", "Visiting Jupiter's moons"],
+        correctIndex: 1,
+        explanation: "Artemis aims to land astronauts on the Moon for the first time since 1972, and to build toward staying there for longer."
+    ),
+    QuizQuestion(
+        question: "What is the most fuel-efficient path between two planets' orbits called?",
+        options: ["A Hohmann transfer orbit", "A gravity slingshot", "A geostationary orbit", "A polar orbit"],
+        correctIndex: 0,
+        explanation: "A Hohmann transfer is half an ellipse that touches both orbits: cheap on fuel, but slow. Try it in Mission Builder!"
+    ),
+    QuizQuestion(
+        question: "Why do missions to Mars launch only about every 26 months?",
+        options: ["Rockets take that long to build", "Mars's dust storms last two years", "Launch sites close in between", "Earth and Mars line up for an efficient trip only that often"],
+        correctIndex: 3,
+        explanation: "The planets must be in the right places for a transfer orbit, and Earth and Mars return to that line-up about every 26 months."
+    ),
+    QuizQuestion(
+        question: "How long does a radio message take to travel from Mars to Earth?",
+        options: ["Less than a second", "About 1 hour", "Between about 3 and 22 minutes", "About 2 days"],
+        correctIndex: 2,
+        explanation: "It depends where the planets are: about 3 minutes at their closest and over 20 at their farthest, so Mars rovers can't be driven live."
+    ),
+    QuizQuestion(
+        question: "About how fast must a rocket go to escape Earth's gravity?",
+        options: ["1.1 km/s", "11.2 km/s", "112 km/s", "300,000 km/s"],
+        correctIndex: 1,
+        explanation: "Escape velocity from Earth's surface is about 11.2 km/s, which is over 40,000 km/h."
+    ),
+    QuizQuestion(
+        question: "Which rocket carried the Apollo astronauts to the Moon?",
+        options: ["Saturn V", "Falcon 9", "The Space Shuttle", "Soyuz"],
+        correctIndex: 0,
+        explanation: "At 110 m tall, Saturn V is still one of the most powerful rockets ever flown."
+    ),
+    QuizQuestion(
+        question: "What was the first spacecraft to land on a comet?",
+        options: ["Rosetta", "Giotto", "Deep Impact", "Philae"],
+        correctIndex: 3,
+        explanation: "Rosetta's lander Philae touched down on comet 67P in November 2014, bouncing twice before coming to rest."
+    ),
+    QuizQuestion(
+        question: "Which mission brought samples from asteroid Bennu back to Earth in 2023?",
+        options: ["Hayabusa2", "Dawn", "OSIRIS-REx", "Lucy"],
+        correctIndex: 2,
+        explanation: "OSIRIS-REx grabbed rock and dust from Bennu in 2020 and dropped them to Earth in a capsule in September 2023."
+    ),
+    QuizQuestion(
+        question: "What did NASA's DART mission do in 2022?",
+        options: ["Landed on Mars", "Crashed into an asteroid to change its orbit", "Photographed a black hole", "Repaired a satellite"],
+        correctIndex: 1,
+        explanation: "DART hit the small asteroid Dimorphos and shortened its orbit by about 33 minutes, the first test of defending Earth from an asteroid."
+    ),
+    QuizQuestion(
+        question: "Which NASA mission launched in 2024 to study Jupiter's moon Europa?",
+        options: ["Europa Clipper", "Juno", "JUICE", "Galileo"],
+        correctIndex: 0,
+        explanation: "From 2030 Europa Clipper will fly past Europa dozens of times to find out whether its hidden ocean could support life."
+    ),
+    QuizQuestion(
+        question: "What is a light-year?",
+        options: ["The time light takes to reach Earth", "A year on a planet near another star", "How bright a star is", "The distance light travels in a year"],
+        correctIndex: 3,
+        explanation: "A light-year is a distance: about 9.46 trillion km, how far light travels in one year."
+    ),
+    QuizQuestion(
+        question: "What is the nearest star to the Sun?",
+        options: ["Sirius", "Polaris", "Proxima Centauri", "Betelgeuse"],
+        correctIndex: 2,
+        explanation: "Proxima Centauri, a small red dwarf, is about 4.2 light-years away."
+    ),
+    QuizQuestion(
+        question: "What is the name of our galaxy?",
+        options: ["Andromeda", "The Milky Way", "The Large Magellanic Cloud", "Triangulum"],
+        correctIndex: 1,
+        explanation: "The Milky Way is a barred spiral galaxy with hundreds of billions of stars; the Sun sits in one of its arms."
+    ),
+    QuizQuestion(
+        question: "Which is the nearest large galaxy to the Milky Way?",
+        options: ["Andromeda", "Sombrero", "Whirlpool", "Centaurus A"],
+        correctIndex: 0,
+        explanation: "Andromeda is about 2.5 million light-years away and heading for a collision with the Milky Way in about 4 to 5 billion years."
+    ),
+    QuizQuestion(
+        question: "What colour are the hottest stars?",
+        options: ["Red", "Yellow", "Orange", "Blue"],
+        correctIndex: 3,
+        explanation: "A star's colour shows its temperature: red stars are the coolest, while blue stars can be hotter than 30,000°C."
+    ),
+    QuizQuestion(
+        question: "What will the Sun eventually become at the end of its life?",
+        options: ["A black hole", "A neutron star", "A white dwarf", "A planet"],
+        correctIndex: 2,
+        explanation: "In about 5 billion years the Sun will swell into a red giant, then shed its outer layers and leave a small, hot white dwarf."
+    ),
+    QuizQuestion(
+        question: "What is a supernova?",
+        options: ["A newly born star", "The explosion of a star", "A very bright planet", "A cloud of dust"],
+        correctIndex: 1,
+        explanation: "A supernova can briefly outshine a whole galaxy, and it scatters elements like iron and gold into space."
+    ),
+    QuizQuestion(
+        question: "What is a nebula?",
+        options: ["A cloud of gas and dust in space", "A type of comet", "A small moon", "A group of galaxies"],
+        correctIndex: 0,
+        explanation: "Nebulae are where stars are born: gravity pulls their gas and dust together into new suns."
+    ),
+    QuizQuestion(
+        question: "What is the brightest star in the night sky?",
+        options: ["Polaris", "Vega", "Rigel", "Sirius"],
+        correctIndex: 3,
+        explanation: "Sirius is about 8.6 light-years away and about 25 times as luminous as the Sun."
+    ),
+    QuizQuestion(
+        question: "How fast does light travel?",
+        options: ["About 300 km per second", "About 3,000 km per hour", "About 300,000 km per second", "About 30 million km per second"],
+        correctIndex: 2,
+        explanation: "Light moves at about 299,792 km/s, fast enough to circle Earth more than seven times in one second."
+    ),
+    QuizQuestion(
+        question: "About how old is the universe?",
+        options: ["4.6 billion years", "13.8 billion years", "1 billion years", "100 billion years"],
+        correctIndex: 1,
+        explanation: "The universe began with the Big Bang about 13.8 billion years ago, about three times the age of the Solar System."
+    ),
+    QuizQuestion(
+        question: "Which star stays almost still in the northern sky and has guided travellers for centuries?",
+        options: ["Polaris, the North Star", "Sirius", "Betelgeuse", "Vega"],
+        correctIndex: 0,
+        explanation: "Polaris sits almost directly above Earth's north pole, so the whole night sky seems to turn around it."
+    ),
+    QuizQuestion(
+        question: "What is at the centre of the Milky Way?",
+        options: ["A giant star", "An empty void", "A huge planet", "A supermassive black hole"],
+        correctIndex: 3,
+        explanation: "Sagittarius A* is a black hole about 4 million times the Sun's mass; the first image of it was released in 2022."
+    ),
+    QuizQuestion(
+        question: "In what year was Pluto reclassified as a dwarf planet?",
+        options: ["1930", "1990", "2006", "2015"],
+        correctIndex: 2,
+        explanation: "In 2006 the International Astronomical Union decided Pluto hadn't cleared its orbit of other objects, so it became a dwarf planet."
+    ),
+    QuizQuestion(
+        question: "What is the name of Pluto's largest moon?",
+        options: ["Triton", "Charon", "Nix", "Phobos"],
+        correctIndex: 1,
+        explanation: "Charon is half as wide as Pluto, so big that the two orbit a point in the space between them."
+    ),
+    QuizQuestion(
+        question: "Pluto has a huge heart-shaped plain. Who is it named after?",
+        options: ["Clyde Tombaugh, who discovered Pluto", "The Roman god of love", "A NASA engineer's pet", "The first astronaut"],
+        correctIndex: 0,
+        explanation: "Tombaugh Regio honours Clyde Tombaugh, who discovered Pluto in 1930. Its left lobe is a vast plain of nitrogen ice."
+    ),
+    QuizQuestion(
+        question: "Which dwarf planet is slightly more massive than Pluto?",
+        options: ["Ceres", "Makemake", "Haumea", "Eris"],
+        correctIndex: 3,
+        explanation: "Eris, found in 2005, has about 27% more mass than Pluto. Its discovery led to Pluto's reclassification."
+    ),
+    QuizQuestion(
+        question: "Where do most long-period comets come from?",
+        options: ["The asteroid belt", "Saturn's rings", "The Oort Cloud", "The Sun's corona"],
+        correctIndex: 2,
+        explanation: "The Oort Cloud is a vast shell of icy bodies far beyond Pluto, perhaps reaching a quarter of the way to the nearest star."
+    ),
+    QuizQuestion(
+        question: "Halley's Comet returns about every how many years?",
+        options: ["7", "76", "300", "1,000"],
+        correctIndex: 1,
+        explanation: "Halley last passed in 1986 and will be back in 2061, so most people get one chance to see it."
+    ),
+    QuizQuestion(
+        question: "What is a space rock that survives its fall and lands on Earth called?",
+        options: ["A meteorite", "A meteor", "A comet", "A satellite"],
+        correctIndex: 0,
+        explanation: "It's a meteoroid in space, a meteor while it burns through the sky, and a meteorite once it lands."
+    ),
+    QuizQuestion(
+        question: "What most likely wiped out the dinosaurs 66 million years ago?",
+        options: ["A solar flare", "A comet's tail", "The Moon coming too close", "An asteroid impact"],
+        correctIndex: 3,
+        explanation: "An asteroid about 10 km wide struck what is now Mexico, leaving the Chicxulub crater and changing the climate worldwide."
+    ),
+    QuizQuestion(
+        question: "How many planets are in our Solar System?",
+        options: ["Seven", "Nine", "Eight", "Ten"],
+        correctIndex: 2,
+        explanation: "Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus and Neptune. Pluto was counted as the ninth until 2006."
+    ),
+    QuizQuestion(
+        question: "Which two planets have no moons?",
+        options: ["Mars and Venus", "Mercury and Venus", "Mercury and Mars", "Uranus and Neptune"],
+        correctIndex: 1,
+        explanation: "Mercury and Venus are the only planets without moons; Mars has two tiny ones."
+    ),
+    QuizQuestion(
+        question: "How much would you weigh on the Moon compared with Earth?",
+        options: ["About one sixth", "About half", "About the same", "About twice as much"],
+        correctIndex: 0,
+        explanation: "The Moon's gravity is about 16.5% of Earth's, so a 60 kg person would weigh like 10 kg there. Try the Weight Calculator!"
+    ),
+    QuizQuestion(
+        question: "Gravity on Mars is about what fraction of Earth's?",
+        options: ["About 10%", "About 90%", "About twice Earth's", "About 38%"],
+        correctIndex: 3,
+        explanation: "Mars is smaller and less massive, so its surface gravity is about 38% of Earth's. You could jump nearly three times as high."
+    ),
+    QuizQuestion(
+        question: "By the most common definition, where does space begin?",
+        options: ["About 10 km up", "About 1,000 km up", "About 100 km up (the Kármán line)", "At the Moon"],
+        correctIndex: 2,
+        explanation: "The Kármán line, about 100 km above sea level, is the widely used boundary between Earth's atmosphere and outer space."
+    ),
+    QuizQuestion(
+        question: "What is the stream of charged particles flowing out from the Sun called?",
+        options: ["Sunlight", "The solar wind", "The ozone layer", "Cosmic dust"],
+        correctIndex: 1,
+        explanation: "The solar wind blows out at around 400 km/s in every direction, shaping comet tails and causing auroras when it reaches Earth."
+    ),
+    QuizQuestion(
+        question: "About how hot is the visible surface of the Sun?",
+        options: ["About 5,500°C", "About 500°C", "About 55,000°C", "About 15 million °C"],
+        correctIndex: 0,
+        explanation: "The photosphere glows at about 5,500°C: far cooler than the 15 million °C core, and oddly cooler than the corona above it."
+    ),
+    QuizQuestion(
+        question: "Among the planets, which has the largest moon compared with its own size?",
+        options: ["Jupiter", "Saturn", "Mars", "Earth"],
+        correctIndex: 3,
+        explanation: "Our Moon is over a quarter of Earth's width. Jupiter's Ganymede is bigger, but tiny next to Jupiter."
+    ),
+    QuizQuestion(
+        question: "Dust storms on Mars can sometimes do what?",
+        options: ["Reach the Moon", "Put out its volcanoes", "Cover the entire planet", "Turn the sky green"],
+        correctIndex: 2,
+        explanation: "Every few years a dust storm grows to wrap the whole planet for weeks. One ended the Opportunity rover's mission in 2018."
+    ),
+    QuizQuestion(
+        question: "Jupiter's moon Ganymede is bigger than which planet?",
+        options: ["Mars", "Mercury", "Earth", "Venus"],
+        correctIndex: 1,
+        explanation: "Ganymede is about 5,268 km across, wider than Mercury, though Mercury has about twice its mass."
+    ),
+    QuizQuestion(
+        question: "What is Titan's thick atmosphere mostly made of?",
+        options: ["Nitrogen", "Oxygen", "Carbon dioxide", "Helium"],
+        correctIndex: 0,
+        explanation: "Titan's air is about 95% nitrogen, with a surface pressure about 1.5 times Earth's. It's the only moon with a thick atmosphere."
     )
 ]

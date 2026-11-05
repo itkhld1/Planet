@@ -32,13 +32,18 @@ enum WeightUnit: String, CaseIterable, Identifiable {
 /// Keys shared between the settings screen and the features they configure.
 enum SettingsKey {
     static let weightUnit = "weightUnit"
+    static let weightOnEarth = "weightOnEarth"
     static let hapticsEnabled = "hapticsEnabled"
     static let soundEffectsEnabled = "soundEffectsEnabled"
     static let hasSeenInstruction = "AppInstruction"
-    static let highScore = "HighScore"
     static let showPlanetLabels = "showPlanetLabels"
     static let hasSeenMapHint = "hasSeenMapHint"
     static let mapDaysPerSecond = "mapDaysPerSecond"
+    /// Typed into the Age Calculator; read by Mission Builder and the crew.
+    static let ageOnEarth = "ageOnEarth"
+    static let missionOrigin = "missionOrigin"
+    static let missionTarget = "missionTarget"
+    static let missionSpeed = "missionSpeed"
 }
 
 enum AppStoreLink {
@@ -90,34 +95,35 @@ enum ReviewPrompt {
     /// Planet or Sun details opened from the map before asking.
     static let interactionsBeforeAsking = 5
 
-    private static var version: String {
+    private static var currentVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
     }
 
+    // `defaults` and `version` are parameters only so tests can use a
+    // scratch suite; the app always takes the defaults.
+
     /// Claims this version's one ask: true the first time only.
-    private static func claimAsk() -> Bool {
-        let defaults = UserDefaults.standard
+    private static func claimAsk(_ defaults: UserDefaults, version: String) -> Bool {
         guard defaults.string(forKey: lastVersionKey) != version else { return false }
         defaults.set(version, forKey: lastVersionKey)
         return true
     }
 
     /// Call when someone opens a planet's or the Sun's details on the map.
-    static func recordInteraction() {
-        let defaults = UserDefaults.standard
+    static func recordInteraction(defaults: UserDefaults = .standard) {
         defaults.set(defaults.integer(forKey: interactionsKey) + 1, forKey: interactionsKey)
     }
 
     /// Call when they're back on the map after reading, never mid-task.
-    static func shouldAskAfterInteractions() -> Bool {
-        guard UserDefaults.standard.integer(forKey: interactionsKey) >= interactionsBeforeAsking else { return false }
-        return claimAsk()
+    static func shouldAskAfterInteractions(defaults: UserDefaults = .standard,
+                                           version: String = currentVersion) -> Bool {
+        guard defaults.integer(forKey: interactionsKey) >= interactionsBeforeAsking else { return false }
+        return claimAsk(defaults, version: version)
     }
 
     /// Call once per launch.
-    static func recordLaunch() {
-        let defaults = UserDefaults.standard
-        let today = Calendar.current.startOfDay(for: Date()).timeIntervalSince1970
+    static func recordLaunch(on date: Date = Date(), defaults: UserDefaults = .standard) {
+        let today = Calendar.current.startOfDay(for: date).timeIntervalSince1970
         var days = defaults.array(forKey: launchDaysKey) as? [Double] ?? []
         if !days.contains(today) {
             days.append(today)
@@ -125,11 +131,13 @@ enum ReviewPrompt {
         }
     }
 
-    static func shouldAsk(afterScore score: Int, outOf total: Int) -> Bool {
-        let launchDays = (UserDefaults.standard.array(forKey: launchDaysKey) as? [Double] ?? []).count
+    static func shouldAsk(afterScore score: Int, outOf total: Int,
+                          defaults: UserDefaults = .standard,
+                          version: String = currentVersion) -> Bool {
+        let launchDays = (defaults.array(forKey: launchDaysKey) as? [Double] ?? []).count
         guard total > 0,
               Double(score) / Double(total) >= 0.7,
               launchDays >= 2 else { return false }
-        return claimAsk()
+        return claimAsk(defaults, version: version)
     }
 }

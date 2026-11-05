@@ -35,6 +35,10 @@ struct HomeView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.requestReview) private var requestReview
     @State private var didStart = false
+    /// Flips once on first appearance, to draw the orbits in.
+    @State private var revealed = false
+    /// The planet just tapped, and when: drives its ripple and bounce.
+    @State private var tapped: (name: String, at: Date)?
 
     private let minZoom: CGFloat = 0.5
     private let maxZoom: CGFloat = 3
@@ -61,6 +65,14 @@ struct HomeView: View {
                         SolarSystemMap(
                             date: clock.date(at: context.date),
                             sunSpin: reduceMotion ? 0 : context.date.timeIntervalSinceReferenceDate,
+                            animate: !reduceMotion,
+                            revealed: revealed,
+                            now: context.date,
+                            tapped: tapped,
+                            onTapPlanet: openPlanet,
+                            // Above this the Moon laps Earth faster than the
+                            // eye can follow, so it's hidden.
+                            showMoon: !clock.isPlaying || currentSpeed <= 30,
                             scale: scale,
                             // Below 1× the orbits are too close for labels.
                             showLabels: showLabels && zoom >= 1,
@@ -147,6 +159,15 @@ struct HomeView: View {
                 // still; Play is one tap away.
                 if !didStart {
                     didStart = true
+                    if reduceMotion {
+                        revealed = true
+                    } else {
+                        // A beat after the screen appears, so the reveal is seen.
+                        Task {
+                            try? await Task.sleep(for: .seconds(0.15))
+                            revealed = true
+                        }
+                    }
                     clock.jumpToToday()
                     if reduceMotion { clock.setPlaying(false) }
                 }
@@ -159,6 +180,23 @@ struct HomeView: View {
                 isVisible = false
                 clock.setSuspended(true)
             }
+        }
+    }
+
+    // MARK: Tapping a planet
+
+    /// A ripple and a bounce first, then the details: the tap feels like it
+    /// landed on the planet before the sheet covers the map.
+    private func openPlanet(_ planet: Planet) {
+        playHaptic(.light)
+        guard !reduceMotion else {
+            selectedPlanet = planet
+            return
+        }
+        tapped = (planet.name, Date())
+        Task {
+            try? await Task.sleep(for: .seconds(0.3))
+            selectedPlanet = planet
         }
     }
 
@@ -220,16 +258,17 @@ struct HomeView: View {
     private var timeCard: some View {
         VStack(spacing: 4) {
             // Only this row redraws as the date changes; the slider stays put.
-            TimelineView(.animation(minimumInterval: 0.1, paused: !isVisible || !clock.isPlaying)) { context in
+            TimelineView(.animation(minimumInterval: 0.1, paused: !isVisible)) { context in
                 let date = clock.date(at: context.date)
                 let isToday = abs(date.timeIntervalSince(context.date)) < 86_400
 
                 HStack(spacing: 10) {
                     Button {
                         playHaptic(.light)
-                        clock.setPlaying(!clock.isPlaying)
+                        withAnimation { clock.setPlaying(!clock.isPlaying) }
                     } label: {
                         Image(systemName: clock.isPlaying ? "pause.fill" : "play.fill")
+                            .contentTransition(.symbolEffect(.replace))
                             .font(.system(size: 16, weight: .semibold))
                             .frame(width: 30, height: 30)
                             .contentShape(Rectangle())
@@ -255,13 +294,19 @@ struct HomeView: View {
                     if !isToday {
                         Button {
                             playHaptic(.light)
-                            clock.jumpToToday()
+                            // Glides back rather than jumping, so you see
+                            // the planets wind back to where they are now.
+                            if reduceMotion {
+                                clock.jumpToToday()
+                            } else {
+                                clock.glideToToday()
+                            }
                         } label: {
                             Text("Today")
                                 .font(AppFont.bold(12))
                                 .padding(.vertical, 5)
                                 .padding(.horizontal, 9)
-                                .background(Color.cyan.opacity(0.35), in: Capsule())
+                                .background(Palette.accent.opacity(0.35), in: Capsule())
                         }
                         .accessibilityHint("Shows where the planets are right now")
                     }
@@ -278,7 +323,8 @@ struct HomeView: View {
         .padding(.top, 8)
         .padding(.bottom, 4)
         .padding(.horizontal, 12)
-        .background(Color.black.opacity(0.35), in: RoundedRectangle(cornerRadius: 18))
+        // Frosted, since it floats over the moving map.
+        .glassCard(cornerRadius: 18)
     }
 
     private var currentSpeed: Double {
@@ -300,11 +346,7 @@ struct HomeView: View {
 
     private var background: some View {
         ZStack {
-            LinearGradient(
-                gradient: Gradient(colors: [.black, Color("GradientColor"), .purple]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            SpaceGradient()
             StarFieldView(count: 100)
         }
     }
@@ -315,8 +357,9 @@ struct HomeView: View {
                 .font(.title2)
                 .foregroundColor(.white)
                 .padding(12)
-                .background(Color.black.opacity(0.35))
-                .clipShape(Circle())
+                .background(.ultraThinMaterial, in: Circle())
+                .overlay(Circle().stroke(Palette.cardStroke, lineWidth: 1))
+                .environment(\.colorScheme, .dark)
         }
         .accessibilityLabel("Recenter")
     }
@@ -327,11 +370,13 @@ struct HomeView: View {
             withAnimation(.easeInOut(duration: 0.2)) { showLabels.toggle() }
         } label: {
             Image(systemName: showLabels ? "tag.fill" : "tag.slash")
+                .contentTransition(.symbolEffect(.replace))
                 .font(.title2)
                 .foregroundColor(.white)
                 .padding(12)
-                .background(Color.black.opacity(0.35))
-                .clipShape(Circle())
+                .background(.ultraThinMaterial, in: Circle())
+                .overlay(Circle().stroke(Palette.cardStroke, lineWidth: 1))
+                .environment(\.colorScheme, .dark)
         }
         .accessibilityLabel("Planet names")
         .accessibilityValue(showLabels ? Text("On") : Text("Off"))
@@ -402,8 +447,17 @@ struct HomeView: View {
 struct SolarSystemMap: View {
     /// The simulated date the planets are shown at.
     let date: Date
-    /// Seconds of real time, for the Sun's (decorative) spin.
+    /// Seconds of real time, for the Sun's (decorative) spin and glow.
     let sunSpin: TimeInterval
+    /// False with Reduce Motion: no breathing glow or solar wind.
+    var animate = true
+    /// The opening reveal: orbits draw in one by one, then the planets appear.
+    var revealed = true
+    /// Real time, for effects that run in seconds rather than map days.
+    var now = Date()
+    var tapped: (name: String, at: Date)?
+    var onTapPlanet: ((Planet) -> Void)?
+    var showMoon = true
     let scale: CGFloat
     var showLabels = false
     /// Labels follow the screen size but not the zoom, so they stay readable
@@ -426,19 +480,26 @@ struct SolarSystemMap: View {
         ZStack {
             sunGlow
 
-            ForEach(orbitingPlanets) { planet in
-                Circle()
-                    .stroke(Color.white.opacity(0.3), lineWidth: 1)
-                    .frame(width: planet.orbiteRadius * 2 * scale, height: planet.orbiteRadius * 2 * scale)
-                    .allowsHitTesting(false)
+            ForEach(Array(orbitingPlanets.enumerated()), id: \.element.id) { index, planet in
+                orbit(planet, index: index)
+            }
+
+            asteroidBelt
+
+            if animate {
+                solarWind
+                comet
             }
 
             sunView
+                .scaleEffect(revealed ? 1 : 0.4)
+                .opacity(revealed ? 1 : 0)
+                .animation(.spring(response: 0.6, dampingFraction: 0.65), value: revealed)
 
             // Outer planets first, so where tap areas overlap the smaller
             // inner planets are on top.
             ForEach(Array(orbitingPlanets.enumerated()).reversed(), id: \.element.id) { index, planet in
-                planetView(planet)
+                planetView(planet, index: index)
                     // VoiceOver reads by screen position, which keeps changing
                     // here; this fixes the order to Sun, Mercury … Neptune.
                     .accessibilitySortPriority(Double(99 - index))
@@ -446,17 +507,52 @@ struct SolarSystemMap: View {
         }
     }
 
+    /// Orbits fade outward, which gives the map depth. The selected planet's
+    /// orbit lights up in its own colour while its details are open, and
+    /// the rest step back.
+    private func orbit(_ planet: Planet, index: Int) -> some View {
+        let isSelected = selectedPlanet?.name == planet.name
+        let fade = 0.35 - 0.2 * Double(index) / Double(max(orbitingPlanets.count - 1, 1))
+        let opacity = selectedPlanet == nil ? fade : fade * 0.5
+        return Circle()
+            .trim(from: 0, to: revealed ? 1 : 0)
+            .stroke(isSelected ? planet.color.opacity(0.9) : Color.white.opacity(opacity),
+                    lineWidth: isSelected ? 1.5 : 1)
+            // Drawn from the top, inner orbits first.
+            .rotationEffect(.degrees(-90))
+            .animation(.easeInOut(duration: 0.9).delay(0.1 + 0.07 * Double(index)), value: revealed)
+            .frame(width: planet.orbiteRadius * 2 * scale, height: planet.orbiteRadius * 2 * scale)
+            .allowsHitTesting(false)
+    }
+
+    /// The Sun's glow, slowly breathing in and out.
     private var sunGlow: some View {
-        ZStack {
+        let breath = animate ? 1 + 0.07 * sin(sunSpin * 2 * .pi / 4) : 1
+        return ZStack {
             ForEach([(30.0, 5.0, 0.3), (60.0, 10.0, 0.3), (150.0, 15.0, 0.2)], id: \.0) { size, blur, opacity in
                 Circle()
-                    .fill(Color.yellow)
-                    .frame(width: size * scale, height: size * scale)
+                    .fill(Palette.amber)
+                    .frame(width: size * scale * breath, height: size * scale * breath)
                     .blur(radius: blur * scale)
                     .opacity(opacity)
             }
         }
         .allowsHitTesting(false)
+    }
+
+    /// Faint rings rippling out from the Sun, like the solar wind.
+    private var solarWind: some View {
+        ZStack {
+            ForEach(0..<2, id: \.self) { ring in
+                let progress = (sunSpin / 6 + Double(ring) / 2).truncatingRemainder(dividingBy: 1)
+                let diameter = (28 + 56 * progress) * 2 * scale
+                Circle()
+                    .stroke(Palette.amber.opacity(0.3 * pow(1 - progress, 1.5)), lineWidth: 1)
+                    .frame(width: diameter, height: diameter)
+            }
+        }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
     }
 
     private var sunView: some View {
@@ -474,7 +570,7 @@ struct SolarSystemMap: View {
             .accessibilitySortPriority(100)
     }
 
-    private func planetView(_ planet: Planet) -> some View {
+    private func planetView(_ planet: Planet, index: Int) -> some View {
         let radians = LaunchWindow.longitude(planet.name, on: date) ?? planet.initialAngle * .pi / 180
         let radius = planet.orbiteRadius * scale
         let size = planet.size * 2 * scale
@@ -486,27 +582,180 @@ struct SolarSystemMap: View {
             .frame(width: max(size, minTapSize), height: max(size, minTapSize))
             .contentShape(Circle())
             .onTapGesture {
-                playHaptic(.light)
-                selectedPlanet = planet
+                if let onTapPlanet {
+                    onTapPlanet(planet)
+                } else {
+                    playHaptic(.light)
+                    selectedPlanet = planet
+                }
+            }
+            .overlay {
+                if planet.name == "Earth" && showMoon {
+                    moon(around: size)
+                }
             }
             .overlay {
                 if showLabels {
+                    let isSelected = selectedPlanet?.name == planet.name
                     Text(planet.name.localizedBodyName)
-                        .font(AppFont.regular(10 * labelScale))
-                        .foregroundColor(.white.opacity(0.85))
+                        .font(isSelected ? AppFont.bold(10 * labelScale) : AppFont.regular(10 * labelScale))
+                        .foregroundColor(isSelected ? planet.color : .white.opacity(0.85))
                         .shadow(color: .black, radius: 2)
                         .fixedSize()
-                        .offset(y: size / 2 + 8 * labelScale)
+                        // Earth's label sits below the Moon's orbit.
+                        .offset(y: size / 2 + 8 * labelScale + (planet.name == "Earth" && showMoon ? 7 * scale : 0))
                         .allowsHitTesting(false)
                         .accessibilityHidden(true)
                         .transition(.opacity)
                 }
             }
+            .overlay { ripple(for: planet, size: size) }
+            .scaleEffect(bounce(for: planet))
+            // Appear after their orbit has drawn in.
+            .scaleEffect(revealed ? 1 : 0.2)
+            .opacity(revealed ? 1 : 0)
+            .animation(.spring(response: 0.5, dampingFraction: 0.7).delay(0.4 + 0.07 * Double(index)), value: revealed)
             // Screen y points down, so negate it for anticlockwise motion.
             .offset(x: radius * cos(radians), y: -radius * sin(radians))
             .accessibilityLabel(planet.name.localizedBodyName)
             .accessibilityHint("Shows details about \(planet.name.localizedBodyName)")
             .accessibilityAddTraits(.isButton)
+    }
+
+    // MARK: Tap feedback
+
+    private static let tapEffectLength = 0.6
+
+    /// 0…1 through the tap effect for this planet, or nil when none is running.
+    private func tapProgress(for planet: Planet) -> Double? {
+        guard animate, let tapped, tapped.name == planet.name else { return nil }
+        let progress = now.timeIntervalSince(tapped.at) / Self.tapEffectLength
+        return (0...1).contains(progress) ? progress : nil
+    }
+
+    private func bounce(for planet: Planet) -> CGFloat {
+        guard let p = tapProgress(for: planet) else { return 1 }
+        return 1 + 0.3 * sin(p * .pi)
+    }
+
+    /// A ring in the planet's colour, spreading out and fading.
+    @ViewBuilder
+    private func ripple(for planet: Planet, size: CGFloat) -> some View {
+        if let p = tapProgress(for: planet) {
+            let diameter = size + (12 + 50 * p) * scale
+            Circle()
+                .stroke(planet.color.opacity(0.9 * (1 - p)), lineWidth: 2)
+                .frame(width: diameter, height: diameter)
+                .allowsHitTesting(false)
+        }
+    }
+
+    // MARK: Asteroid belt
+
+    /// Rocks between Mars and Jupiter, each at a fixed distance and starting
+    /// angle. Seeded, so the belt is the same every time.
+    private static let asteroids: [(radius: Double, angle: Double, size: Double, opacity: Double)] = {
+        var rng = SeededGenerator(seed: 2026)
+        return (0..<160).map { _ in
+            (radius: .random(in: 0...1, using: &rng),
+             angle: .random(in: 0...(2 * .pi), using: &rng),
+             size: .random(in: 0.6...1.5, using: &rng),
+             opacity: .random(in: 0.25...0.6, using: &rng))
+        }
+    }()
+
+    /// Inner rocks lap faster than outer ones, by Kepler's third law: the
+    /// belt spans roughly 2.2 to 3.3 AU, so 3.3 to 6 years a lap.
+    private var asteroidBelt: some View {
+        let inner = 117.0, outer = 128.0
+        let days = date.timeIntervalSince(Date(timeIntervalSince1970: 946_728_000)) / 86_400
+        return Canvas { context, canvasSize in
+            let centre = CGPoint(x: canvasSize.width / 2, y: canvasSize.height / 2)
+            for rock in Self.asteroids {
+                let au = 2.2 + 1.1 * rock.radius
+                let years = pow(au, 1.5)
+                let angle = rock.angle + 2 * .pi * days / (365.25 * years)
+                let r = (inner + (outer - inner) * rock.radius) * Double(scale)
+                let point = CGPoint(x: centre.x + r * cos(angle), y: centre.y - r * sin(angle))
+                let d = rock.size * Double(max(scale, 0.7))
+                context.fill(Path(ellipseIn: CGRect(x: point.x - d / 2, y: point.y - d / 2, width: d, height: d)),
+                             with: .color(Color(red: 0.8, green: 0.75, blue: 0.68).opacity(rock.opacity)))
+            }
+        }
+        .frame(width: outer * 2.1 * scale, height: outer * 2.1 * scale)
+        .opacity(revealed ? 1 : 0)
+        .animation(.easeIn(duration: 1).delay(0.6), value: revealed)
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+
+    // MARK: Comet
+
+    private static let cometSlot = 40.0
+    private static let cometDuration = 14.0
+
+    /// Every so often a comet sweeps past the Sun. Its tail always points
+    /// away from the Sun, as real comet tails do, and grows as it gets
+    /// closer. Timed in real seconds, like the shooting stars.
+    private var comet: some View {
+        let t = now.timeIntervalSinceReferenceDate
+        let slot = floor(t / Self.cometSlot)
+        var rng = SeededGenerator(seed: UInt64(bitPattern: Int64(slot)) &* 7 &+ 11)
+        let start = slot * Self.cometSlot + .random(in: 2...(Self.cometSlot - Self.cometDuration - 2), using: &rng)
+        let progress = (t - start) / Self.cometDuration
+        let closest = Double.random(in: 50...140, using: &rng)
+        let approach = Double.random(in: 0...(2 * .pi), using: &rng)
+        let side: Double = Bool.random(using: &rng) ? 1 : -1
+        let extent = (SolarSystemMap.outerOrbit + 60) * 2.2
+
+        return Canvas { context, canvasSize in
+            guard (0...1).contains(progress) else { return }
+            let s = Double(scale)
+            let centre = CGPoint(x: canvasSize.width / 2, y: canvasSize.height / 2)
+            // A straight pass: the closest point, then along the
+            // perpendicular. Fast near the Sun, slower far out.
+            let along = (progress * 2 - 1)
+            let curved = along * abs(along) * 0.6 + along * 0.4
+            let span = 330.0
+            let nx = cos(approach), ny = sin(approach)
+            let px = -ny * side, py = nx * side
+            let x = (nx * closest + px * curved * span) * s
+            let y = (ny * closest + py * curved * span) * s
+            let head = CGPoint(x: centre.x + x, y: centre.y + y)
+            let distance = max(hypot(x, y), 1)
+            let away = CGPoint(x: x / distance, y: y / distance)
+            let tailLength = min(140, 20 + 5000 / (distance / s)) * s
+            let tail = CGPoint(x: head.x + away.x * tailLength, y: head.y + away.y * tailLength)
+            let fade = min(1, min(progress, 1 - progress) * 6)
+
+            var path = Path()
+            path.move(to: head)
+            path.addLine(to: tail)
+            context.stroke(path,
+                           with: .linearGradient(Gradient(colors: [Color(red: 0.75, green: 0.92, blue: 1).opacity(0.75 * fade), .clear]),
+                                                 startPoint: head, endPoint: tail),
+                           style: StrokeStyle(lineWidth: 3 * s, lineCap: .round))
+            context.fill(Path(ellipseIn: CGRect(x: head.x - 2.5 * s, y: head.y - 2.5 * s, width: 5 * s, height: 5 * s)),
+                         with: .color(.white.opacity(fade)))
+        }
+        .frame(width: extent * scale, height: extent * scale)
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+
+    /// The Moon circling Earth at its real rate (27.3 days a lap), from its
+    /// mean longitude. Seen from above, like the planets.
+    private func moon(around earthSize: CGFloat) -> some View {
+        let days = date.timeIntervalSince(Date(timeIntervalSince1970: 946_728_000)) / 86_400
+        let longitude = (218.316 + 13.176_396 * days) * .pi / 180
+        let distance = earthSize / 2 + 5 * scale
+        let size = max(3, 3.2 * scale)
+        return Circle()
+            .fill(Color(white: 0.85))
+            .frame(width: size, height: size)
+            .offset(x: distance * cos(longitude), y: -distance * sin(longitude))
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
     }
 }
 
@@ -579,6 +828,11 @@ struct MapClock {
     private var isRunning: Bool { isPlaying && !isSuspended }
 
     func date(at wall: Date) -> Date {
+        if let glide, wall < glide.start.addingTimeInterval(glide.duration) {
+            let p = max(0, wall.timeIntervalSince(glide.start) / glide.duration)
+            let eased = p < 0.5 ? 2 * p * p : 1 - pow(-2 * p + 2, 2) / 2
+            return glide.from.addingTimeInterval(glide.to.timeIntervalSince(glide.from) * eased)
+        }
         guard isRunning else { return anchorDate }
         return anchorDate.addingTimeInterval(wall.timeIntervalSince(anchorWall) * daysPerSecond * 86_400)
     }
@@ -588,6 +842,7 @@ struct MapClock {
         let now = Date()
         anchorDate = date(at: now)
         anchorWall = now
+        glide = nil
     }
 
     mutating func setSpeed(_ days: Double) {
@@ -606,7 +861,23 @@ struct MapClock {
     }
 
     mutating func jumpToToday() {
+        glide = nil
         anchorDate = Date()
         anchorWall = Date()
+    }
+
+    /// An eased trip from one simulated date to another, over real seconds.
+    private var glide: (from: Date, to: Date, start: Date, duration: Double)?
+
+    /// Winds the map back (or forward) to today over a second or so, so the
+    /// planets visibly travel there; then carries on as before.
+    mutating func glideToToday() {
+        let now = Date()
+        let from = date(at: now)
+        let duration = 1.2
+        glide = (from, now, now, duration)
+        // Where things stand when the glide ends: today, at that moment.
+        anchorDate = now
+        anchorWall = now.addingTimeInterval(duration)
     }
 }

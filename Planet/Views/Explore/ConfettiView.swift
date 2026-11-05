@@ -16,7 +16,7 @@ struct ConfettiView: View {
 
     static let duration = 3.0
 
-    private static let colors: [Color] = [.yellow, .cyan, .pink, .orange, .green, .purple, .white]
+    private static let colors: [Color] = [.yellow, Palette.accent, .pink, .orange, .green, .purple, .white]
 
     private struct Piece {
         let x: Double          // 0…1 across the width
