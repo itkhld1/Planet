@@ -13,8 +13,9 @@ import Testing
 @Suite("Quiz question banks")
 struct QuizBankTests {
     @Test func banksHaveTheAdvertisedSize() {
-        // The App Store description promises 135 questions.
-        #expect(questionsEn.count == 135)
+        // The App Store description and onboarding promise 200 questions
+        // ("over 200"), so the bank must never drop below that.
+        #expect(questionsEn.count >= 200)
         #expect(questionsFa.count == questionsEn.count)
     }
 
