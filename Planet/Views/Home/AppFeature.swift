@@ -15,6 +15,7 @@ enum AppFeature: String, CaseIterable, Identifiable {
     case compare
     case simulation
     case quiz
+    case missionControl
     case weight
     case age
 
@@ -51,7 +52,7 @@ enum AppFeature: String, CaseIterable, Identifiable {
         switch self {
         case .encyclopedia, .compare, .simulation: return .learn
         case .spaceWeather, .missionBuilder: return .live
-        case .quiz, .weight, .age: return .play
+        case .quiz, .missionControl, .weight, .age: return .play
         }
     }
 
@@ -62,6 +63,7 @@ enum AppFeature: String, CaseIterable, Identifiable {
         case .encyclopedia: return "Encyclopedia"
         case .compare: return "Compare Planets"
         case .quiz: return "Quiz"
+        case .missionControl: return "Mission Control"
         case .weight: return "Weight Calculator"
         case .age: return "Age Calculator"
         case .simulation: return "3D Planets"
@@ -75,6 +77,7 @@ enum AppFeature: String, CaseIterable, Identifiable {
         case .encyclopedia: return "Planets, moons and the Sun, searchable"
         case .compare: return "Two worlds side by side, to scale"
         case .quiz: return "Ten questions, fresh every round"
+        case .missionControl: return "Plan real missions and earn stars"
         case .weight: return "What you'd weigh on other worlds"
         case .age: return "Your age on different planetary orbits"
         case .simulation: return "Spin every planet in 3D"
@@ -88,6 +91,7 @@ enum AppFeature: String, CaseIterable, Identifiable {
         case .encyclopedia: return "book.closed.fill"
         case .compare: return "arrow.left.and.right.square.fill"
         case .quiz: return "brain.head.profile"
+        case .missionControl: return "flag.checkered"
         case .weight: return "scalemass.fill"
         case .age: return "birthday.cake.fill"
         case .simulation: return "rotate.3d"
@@ -101,6 +105,7 @@ enum AppFeature: String, CaseIterable, Identifiable {
         case .encyclopedia: return [.green, .teal]
         case .compare: return [.purple, .pink]
         case .quiz: return [.indigo, .purple]
+        case .missionControl: return [.orange, .pink]
         case .weight: return [.teal, .blue]
         case .age: return [.yellow, .orange]
         case .simulation: return [.pink, .orange]
@@ -124,6 +129,7 @@ enum AppFeature: String, CaseIterable, Identifiable {
         case .encyclopedia: PlanetListView()
         case .compare: ComparePlanetsView()
         case .quiz: QuizView()
+        case .missionControl: MissionChallengesView()
         case .weight: PlanetWeightCalculatorView()
         case .age: PlanetAgeCalculatorView()
         case .simulation:

@@ -16,13 +16,35 @@ struct TransferOrbitDiagram: View {
     let target: String
     let launchDate: Date
     let transfer: TransferOrbit
-    /// Whether the launch date is in a window — colours the arrival marker.
-    let isAligned: Bool
-    /// Draws a still frame at this point of the flight instead of animating —
-    /// used for the share image.
-    var stillProgress: Double? = nil
+    /// Whether the target will be at the meeting point — colours the arrival
+    /// marker green or orange. `nil` leaves it neutral (a challenge before
+    /// launch, where the answer mustn't be given away).
+    let isAligned: Bool?
+    var mode: Mode = .loop
+    /// Overrides the diagram's height (the share card uses a fixed size).
+    var height: CGFloat? = nil
+    /// On arrival, trace how far the target was from the meeting point.
+    var showsMiss = false
+
+    enum Mode: Equatable {
+        /// The flight on repeat, as on Mission Builder.
+        case loop
+        /// One frame at this point of the flight. Used by the share image.
+        case still(Double)
+        /// Planets frozen at launch, for lining up a shot. With `showGuide`, a
+        /// marker shows where the target needs to be for a hit.
+        case aim(showGuide: Bool)
+        /// The flight once, from `start`, then holding on arrival.
+        case flight(start: Date)
+    }
+
+    /// How long a challenge launch takes on screen.
+    static let launchFlightSeconds = 4.0
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    // The player's own spacecraft: its colour paints the trail, its icon flies.
+    @AppStorage(Spacecraft.colorKey) private var craftColorIndex = 0
+    @AppStorage(Spacecraft.iconKey) private var craftIconIndex = 0
 
     private var isPhone: Bool { deviceType() == "iPhone" }
     private var travelDays: Double { transfer.travelDays }
@@ -35,14 +57,21 @@ struct TransferOrbitDiagram: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            // A still frame skips TimelineView entirely: ImageRenderer (used
-            // for the share image) doesn't reliably draw timeline content.
-            if let stillProgress {
-                frame(progress: stillProgress, height: 300)
-            } else {
+            // Still frames skip TimelineView entirely: ImageRenderer (used for
+            // the share image) doesn't reliably draw timeline content.
+            switch mode {
+            case .still(let progress):
+                frame(progress: progress)
+            case .aim(let showGuide):
+                frame(progress: 0, guide: showGuide)
+            case .flight(let start):
                 TimelineView(.animation(paused: reduceMotion)) { context in
-                    frame(progress: reduceMotion ? 1 : progress(at: context.date),
-                          height: isPhone ? 280 : 400)
+                    let elapsed = context.date.timeIntervalSince(start)
+                    frame(progress: reduceMotion ? 1 : min(max(elapsed / Self.launchFlightSeconds, 0), 1))
+                }
+            case .loop:
+                TimelineView(.animation(paused: reduceMotion)) { context in
+                    frame(progress: reduceMotion ? 1 : progress(at: context.date))
                 }
             }
 
@@ -56,12 +85,12 @@ struct TransferOrbitDiagram: View {
         .accessibilityLabel(Text("Orbit diagram: \(origin.localizedBodyName) to \(target.localizedBodyName)"))
     }
 
-    private func frame(progress: Double, height: CGFloat) -> some View {
+    private func frame(progress: Double, guide: Bool = false) -> some View {
         VStack(spacing: 8) {
             Canvas { ctx, size in
-                draw(in: &ctx, size: size, progress: progress)
+                draw(in: &ctx, size: size, progress: progress, guide: guide)
             }
-            .frame(height: height)
+            .frame(height: height ?? (isPhone ? 280 : 400))
 
             Text("Day \(MetricFormat.plain(travelDays * progress, decimals: 0)) of \(MetricFormat.plain(travelDays, decimals: 0))")
                 .font(AppFont.bold(isPhone ? 13 : 18))
@@ -99,7 +128,7 @@ struct TransferOrbitDiagram: View {
 
     // MARK: - Drawing
 
-    private func draw(in ctx: inout GraphicsContext, size: CGSize, progress f: Double) {
+    private func draw(in ctx: inout GraphicsContext, size: CGSize, progress f: Double, guide: Bool) {
         guard let departAngle = LaunchWindow.longitude(origin, on: launchDate),
               let targetStart = LaunchWindow.longitude(target, on: launchDate),
               let nO = LaunchWindow.meanMotion(origin),
@@ -132,14 +161,54 @@ struct TransferOrbitDiagram: View {
             }
         }
         ctx.stroke(route, with: .color(.cyan.opacity(0.35)), style: StrokeStyle(lineWidth: 1.5, dash: [4, 4]))
-        ctx.stroke(flown, with: .color(.cyan), style: StrokeStyle(lineWidth: 2, lineCap: .round))
+        ctx.stroke(flown, with: .color(Spacecraft.color(craftColorIndex)), style: StrokeStyle(lineWidth: 2, lineCap: .round))
 
-        // Arrival marker: green when the target will be there, orange when not.
+        // Arrival marker: green when the target will be there, orange when
+        // not, white when that's still a secret.
         let arrival = point(departAngle + transfer.sweptAngle, s(targetRadius), center: center)
         let ring: CGFloat = planetSize + 10
+        let ringColor: Color = isAligned.map { $0 ? .green : .orange } ?? .white
         ctx.stroke(Path(ellipseIn: CGRect(x: arrival.x - ring / 2, y: arrival.y - ring / 2, width: ring, height: ring)),
-                   with: .color((isAligned ? Color.green : .orange).opacity(0.8)),
+                   with: .color(ringColor.opacity(0.8)),
                    style: StrokeStyle(lineWidth: 1.5, dash: [3, 3]))
+
+        // Aim guide: where the target must be *now* to reach the meeting
+        // point together with the spacecraft — it has to lead by the angle it
+        // covers during the flight.
+        if guide {
+            let aimAngle = departAngle + transfer.sweptAngle - nT * travelDays
+            let aim = point(aimAngle, s(targetRadius), center: center)
+            let g: CGFloat = planetSize + 6
+            ctx.fill(Path(ellipseIn: CGRect(x: aim.x - g / 2, y: aim.y - g / 2, width: g, height: g)),
+                     with: .color(.yellow.opacity(0.15)))
+            ctx.stroke(Path(ellipseIn: CGRect(x: aim.x - g / 2, y: aim.y - g / 2, width: g, height: g)),
+                       with: .color(.yellow.opacity(0.9)),
+                       style: StrokeStyle(lineWidth: 1.5, dash: [2, 3]))
+        }
+
+        // Miss: an arc along the target's orbit from the empty meeting point
+        // to where the planet really was, and an ✕ on the spot it missed.
+        if showsMiss && f >= 1 {
+            let from = departAngle + transfer.sweptAngle
+            let to = targetStart + nT * travelDays
+            var delta = (to - from).truncatingRemainder(dividingBy: 2 * .pi)
+            if delta > .pi { delta -= 2 * .pi }
+            if delta < -.pi { delta += 2 * .pi }
+            var arc = Path()
+            for i in 0...40 {
+                let p = point(from + delta * Double(i) / 40, s(targetRadius), center: center)
+                if i == 0 { arc.move(to: p) } else { arc.addLine(to: p) }
+            }
+            ctx.stroke(arc, with: .color(.orange), style: StrokeStyle(lineWidth: 3, lineCap: .round))
+
+            let x: CGFloat = 6
+            var cross = Path()
+            cross.move(to: CGPoint(x: arrival.x - x, y: arrival.y - x))
+            cross.addLine(to: CGPoint(x: arrival.x + x, y: arrival.y + x))
+            cross.move(to: CGPoint(x: arrival.x + x, y: arrival.y - x))
+            cross.addLine(to: CGPoint(x: arrival.x - x, y: arrival.y + x))
+            ctx.stroke(cross, with: .color(.orange), style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
+        }
 
         // Sun
         let sunSize: CGFloat = isPhone ? 26 : 36
@@ -157,13 +226,34 @@ struct TransferOrbitDiagram: View {
         drawLabel(origin, near: originNow, center: center, offset: planetSize * 0.8, in: &ctx)
         drawLabel(target, near: targetNow, center: center, offset: planetSize * 0.8, in: &ctx)
 
-        // Spacecraft, with a soft glow.
+        // The player's spacecraft, with a soft glow in its colour.
+        let craftColor = Spacecraft.color(craftColorIndex)
+        let icon = Spacecraft.icon(craftIconIndex)
         let sc = spacecraft(at: f)
         let craft = point(departAngle + sc.swept, s(sc.r), center: center)
-        ctx.fill(Path(ellipseIn: CGRect(x: craft.x - 8, y: craft.y - 8, width: 16, height: 16)),
-                 with: .color(.cyan.opacity(0.3)))
-        ctx.fill(Path(ellipseIn: CGRect(x: craft.x - 3.5, y: craft.y - 3.5, width: 7, height: 7)),
-                 with: .color(.white))
+        ctx.fill(Path(ellipseIn: CGRect(x: craft.x - 10, y: craft.y - 10, width: 20, height: 20)),
+                 with: .color(craftColor.opacity(0.35)))
+
+        if icon.symbol == "circle.fill" {
+            ctx.fill(Path(ellipseIn: CGRect(x: craft.x - 3.5, y: craft.y - 3.5, width: 7, height: 7)),
+                     with: .color(.white))
+        } else {
+            var symbol = ctx.resolve(Image(systemName: icon.symbol))
+            symbol.shading = .color(.white)
+            var c = ctx
+            c.translateBy(x: craft.x, y: craft.y)
+            if let pointsAt = icon.pointsAt {
+                // Face along the route: direction to a point a little further on.
+                let ahead = spacecraft(at: min(f + 0.01, 1))
+                let behind = spacecraft(at: max(f - 0.01, 0))
+                let p2 = point(departAngle + ahead.swept, s(ahead.r), center: center)
+                let p1 = point(departAngle + behind.swept, s(behind.r), center: center)
+                let heading = atan2(p2.y - p1.y, p2.x - p1.x)
+                c.rotate(by: .radians(heading - pointsAt * .pi / 180))
+            }
+            let side: CGFloat = 13
+            c.draw(symbol, in: CGRect(x: -side / 2, y: -side / 2, width: side, height: side))
+        }
     }
 
     private func drawImage(_ name: String, at p: CGPoint, size: CGFloat, in ctx: inout GraphicsContext) {

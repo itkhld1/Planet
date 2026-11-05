@@ -8,6 +8,7 @@ import SwiftUI
 struct SettingsView: View {
     @AppStorage(SettingsKey.weightUnit) private var weightUnitRaw = WeightUnit.kilograms.rawValue
     @AppStorage(SettingsKey.hapticsEnabled) private var hapticsEnabled = true
+    @AppStorage(SettingsKey.soundEffectsEnabled) private var soundEffectsEnabled = true
     @AppStorage(SettingsKey.hasSeenInstruction) private var hasSeenInstruction = false
     @AppStorage(SettingsKey.highScore) private var highScore = 0
     @AppStorage(AppLanguage.storageKey) private var language = AppLanguage.system.rawValue
@@ -108,6 +109,21 @@ struct SettingsView: View {
                 }
 
                 Text("Vibrate when you tap planets, answers and buttons.")
+                    .font(AppFont.regular(isPhone ? 12 : 17))
+                    .foregroundColor(.white.opacity(0.5))
+
+                Toggle(isOn: $soundEffectsEnabled) {
+                    Text("Sound effects")
+                        .font(AppFont.regular(isPhone ? 15 : 21))
+                        .foregroundColor(.white)
+                }
+                .tint(.blue)
+                .padding(.top, 6)
+                .onChange(of: soundEffectsEnabled) { _, enabled in
+                    if enabled { LaunchEffects.shared.star(3) }
+                }
+
+                Text("Countdown and launch sounds in Mission Control. Silent when your ringer is off.")
                     .font(AppFont.regular(isPhone ? 12 : 17))
                     .foregroundColor(.white.opacity(0.5))
             }

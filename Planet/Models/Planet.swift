@@ -10,6 +10,8 @@ import Foundation
 struct Planet: Identifiable {
     let id = UUID()
     let name: String
+    /// Radius on the Solar System map at 1×, in points. Roughly the cube root
+    /// of the real diameter: compressed enough to fit, but still in order.
     let size: CGFloat
     let imageName: String
     let orbiteRadius: CGFloat
@@ -81,21 +83,21 @@ let sun = Star(
 )
 
 let planets = [
-    Planet(name: "Mercury", size: 10, imageName: "Mercury", orbiteRadius: 45, initialAngle: 0, description: "Mercury is the closest planet to the Sun. FUN FACT: Mercury has the most extreme temperature variations in the solar system, ranging from -173°C at night to 427°C during the day!", diameter: "4,880 km", distanceFromSun: "57.9 million km", dayLength: "58.6 Earth days", rotationDuration: 20, planet3DModel: "Mercury"),
+    Planet(name: "Mercury", size: 6, imageName: "Mercury", orbiteRadius: 45, initialAngle: 0, description: "Mercury is the closest planet to the Sun. FUN FACT: Mercury has the most extreme temperature variations in the solar system, ranging from -173°C at night to 427°C during the day!", diameter: "4,880 km", distanceFromSun: "57.9 million km", dayLength: "58.6 Earth days", rotationDuration: 20, planet3DModel: "Mercury"),
     
-    Planet(name: "Venus", size: 10, imageName: "Venus", orbiteRadius: 65, initialAngle: 45, description: "Venus is the second planet from the Sun. FUN FACT: A day on Venus (243 Earth days) is longer than a year on Venus (225 Earth days)!", diameter: "12,104 km", distanceFromSun: "108.2 million km", dayLength: "243 Earth days", rotationDuration: 100, planet3DModel: "Venus"),
+    Planet(name: "Venus", size: 9, imageName: "Venus", orbiteRadius: 65, initialAngle: 45, description: "Venus is the second planet from the Sun. FUN FACT: A day on Venus (243 Earth days) is longer than a year on Venus (225 Earth days)!", diameter: "12,104 km", distanceFromSun: "108.2 million km", dayLength: "243 Earth days", rotationDuration: 100, planet3DModel: "Venus"),
     
-    Planet(name: "Earth", size: 15, imageName: "Earth", orbiteRadius: 90, initialAngle: 90, description: "Earth is the third planet from the Sun and the only known planet to support life. FUN FACT: Earth is the only planet in the solar system not named after a god.", diameter: "12,742 km", distanceFromSun: "149.6 million km", dayLength: "24 hours", rotationDuration: 150, planet3DModel: "Earth"),
+    Planet(name: "Earth", size: 9.5, imageName: "Earth", orbiteRadius: 90, initialAngle: 90, description: "Earth is the third planet from the Sun and the only known planet to support life. FUN FACT: Earth is the only planet in the solar system not named after a god.", diameter: "12,742 km", distanceFromSun: "149.6 million km", dayLength: "24 hours", rotationDuration: 150, planet3DModel: "Earth"),
     
-    Planet(name: "Mars", size: 15, imageName: "Mars", orbiteRadius: 110, initialAngle: 135, description: "Mars is the fourth planet from the Sun. FUN FACT: Mars has the largest volcano in the solar system, Olympus Mons, which is about three times the height of Mount Everest!", diameter: "6,779 km", distanceFromSun: "227.9 million km", dayLength: "24.6 hours", rotationDuration: 250, planet3DModel: "Mars"),
+    Planet(name: "Mars", size: 7, imageName: "Mars", orbiteRadius: 110, initialAngle: 135, description: "Mars is the fourth planet from the Sun. FUN FACT: Mars has the largest volcano in the solar system, Olympus Mons, which is about three times the height of Mount Everest!", diameter: "6,779 km", distanceFromSun: "227.9 million km", dayLength: "24.6 hours", rotationDuration: 250, planet3DModel: "Mars"),
     
-    Planet(name: "Jupiter", size: 15, imageName: "Jupiter", orbiteRadius: 135, initialAngle: 180, description: "Jupiter is the largest planet in the solar system. FUN FACT: Jupiter has a storm called the Great Red Spot.", diameter: "139,820 km", distanceFromSun: "778.5 million km", dayLength: "9.9 hours", rotationDuration: 300, planet3DModel: "Jupiter"),
+    Planet(name: "Jupiter", size: 17, imageName: "Jupiter", orbiteRadius: 135, initialAngle: 180, description: "Jupiter is the largest planet in the solar system. FUN FACT: Jupiter has a storm called the Great Red Spot.", diameter: "139,820 km", distanceFromSun: "778.5 million km", dayLength: "9.9 hours", rotationDuration: 300, planet3DModel: "Jupiter"),
     
-    Planet(name: "Saturn", size: 15, imageName: "Saturn", orbiteRadius: 155, initialAngle: 225, description: "Saturn is famous for its rings. FUN FACT: Saturn’s rings are made of billions of pieces of ice and rock!", diameter: "116,460 km", distanceFromSun: "1.4 billion km", dayLength: "10.7 hours", rotationDuration: 500, planet3DModel: "Saturn"),
+    Planet(name: "Saturn", size: 20, imageName: "Saturn", orbiteRadius: 155, initialAngle: 225, description: "Saturn is famous for its rings. FUN FACT: Saturn’s rings are made of billions of pieces of ice and rock!", diameter: "116,460 km", distanceFromSun: "1.4 billion km", dayLength: "10.7 hours", rotationDuration: 500, planet3DModel: "Saturn"),
     
-    Planet(name: "Uranus", size: 15, imageName: "Uranus", orbiteRadius: 175, initialAngle: 270, description: "Uranus is tilted on its side. FUN FACT: Uranus rotates on its side, possibly due to a massive collision in its past!", diameter: "50,724 km", distanceFromSun: "2.9 billion km", dayLength: "17.2 hours", rotationDuration: 700, planet3DModel: "Uranus"),
+    Planet(name: "Uranus", size: 12, imageName: "Uranus", orbiteRadius: 175, initialAngle: 270, description: "Uranus is tilted on its side. FUN FACT: Uranus rotates on its side, possibly due to a massive collision in its past!", diameter: "50,724 km", distanceFromSun: "2.9 billion km", dayLength: "17.2 hours", rotationDuration: 700, planet3DModel: "Uranus"),
     
-    Planet(name: "Neptune", size: 15, imageName: "Neptune", orbiteRadius: 195, initialAngle: 300, description: "Neptune is known for its strong winds. FUN FACT: Neptune has the fastest winds in the solar system, reaching speeds of 2,100 km/h!", diameter: "49,244 km", distanceFromSun: "4.5 billion km", dayLength: "16.1 hours", rotationDuration: 800, planet3DModel: "Neptune"),
+    Planet(name: "Neptune", size: 12, imageName: "Neptune", orbiteRadius: 195, initialAngle: 300, description: "Neptune is known for its strong winds. FUN FACT: Neptune has the fastest winds in the solar system, reaching speeds of 2,100 km/h!", diameter: "49,244 km", distanceFromSun: "4.5 billion km", dayLength: "16.1 hours", rotationDuration: 800, planet3DModel: "Neptune"),
 
     Planet(name: "Solar System", size: 0, imageName: "solar system", orbiteRadius: 0, initialAngle: 0, description: "", diameter: "", distanceFromSun: "", dayLength: "", rotationDuration: 0, planet3DModel: "Solar_System_Custom")
 ]

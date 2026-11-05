@@ -217,10 +217,47 @@ enum LaunchWindow {
         return 2 * .pi / abs(nT - nO)
     }
 
+    /// The gap between gaps-closing speeds: how fast (radians per day) the
+    /// target's lead over the origin changes. Negative when it shrinks.
+    static func relativeRate(_ origin: String, _ target: String) -> Double? {
+        guard let nO = meanMotion(origin), let nT = meanMotion(target) else { return nil }
+        return nT - nO
+    }
+
+    /// Where the target is when the spacecraft reaches its orbit, measured
+    /// from the meeting point: radians in (−π, π]. Zero is a perfect hit;
+    /// positive means the target had already gone past.
+    static func miss(from origin: String, to target: String, transfer: TransferOrbit, launch: Date) -> Double? {
+        guard let lO = longitude(origin, on: launch), let lT = longitude(target, on: launch),
+              let nT = meanMotion(target) else { return nil }
+        let gap = wrap(lT + nT * transfer.travelDays - (lO + transfer.sweptAngle))
+        return gap > .pi ? gap - 2 * .pi : gap
+    }
+
     /// How far either side of the ideal day still counts as "in the window".
     /// Real windows last a few weeks; scaled down for pairs that line up often.
     static func tolerance(synodicDays: Double) -> Double {
         min(30, max(5, synodicDays * 0.03))
+    }
+}
+
+// MARK: - Formatting
+
+/// Number formats shared by Mission Builder, Mission Control and the share card.
+enum MissionFormat {
+    /// Days under ~2 months read as days, under ~2 years as months, then years.
+    static func duration(_ days: Double) -> String {
+        if days < 60 {
+            return String(format: String(localized: "%@ days", bundle: Bundle.appLanguage), MetricFormat.plain(days, decimals: 0))
+        }
+        if days < 730 {
+            return String(format: String(localized: "%@ months", bundle: Bundle.appLanguage), MetricFormat.plain(days / 30.44, decimals: 1))
+        }
+        return String(format: String(localized: "%@ years", bundle: Bundle.appLanguage), MetricFormat.plain(days / 365.25, decimals: 1))
+    }
+
+    static func deltaV(_ kmPerSecond: Double) -> String {
+        String(format: String(localized: "%@ km/s", bundle: Bundle.appLanguage), MetricFormat.plain(kmPerSecond, decimals: 1))
     }
 }
 
@@ -270,6 +307,16 @@ struct MissionBuilderView: View {
     @AppStorage("missionSpeed") private var speed = 0.0
     @State private var launchDate = Date()
 
+    /// Opens on a given route and date (from Mission Control's real launch
+    /// windows) instead of the remembered one.
+    struct Preset {
+        let origin: String
+        let target: String
+        let launchDate: Date
+    }
+    var preset: Preset? = nil
+    @State private var presetApplied = false
+
     /// Saved values are checked, so a bad or stale entry can't leave the
     /// screen with no route.
     private var origin: String {
@@ -285,6 +332,10 @@ struct MissionBuilderView: View {
     }
     /// Written by the Age Calculator; read here for "your age on arrival".
     @AppStorage("ageOnEarth") private var ageOnEarth = ""
+    @AppStorage(Crew.storageKey) private var crewJSON = ""
+    @AppStorage(Spacecraft.nameKey) private var craftName = ""
+    @AppStorage(Spacecraft.colorKey) private var craftColor = 0
+    @AppStorage(Spacecraft.iconKey) private var craftIcon = 0
 
     private var isPhone: Bool { deviceType() == "iPhone" }
 
@@ -311,6 +362,7 @@ struct MissionBuilderView: View {
                         travellerCard(transfer)
                         realMissionsCard(transfer)
                         summary
+                        challengeLink
                     }
                 }
                 .padding()
@@ -319,6 +371,14 @@ struct MissionBuilderView: View {
             }
         }
         .appNavigationStyle("Mission Builder")
+        .onAppear {
+            guard let preset, !presetApplied else { return }
+            presetApplied = true
+            origin = preset.origin
+            target = preset.target
+            speed = 0
+            launchDate = preset.launchDate
+        }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 if let transfer {
@@ -610,54 +670,143 @@ struct MissionBuilderView: View {
         return age
     }
 
-    /// Makes the trip personal: how old you'd be when you got there. Links to
-    /// the Age Calculator when we don't know your age yet.
-    @ViewBuilder
+    /// Makes the trip personal: the spacecraft, everyone's age on arrival
+    /// and back home, and whether there's enough food on board.
     private func travellerCard(_ t: TransferOrbit) -> some View {
-        if let age = earthAge {
-            let arrivalAge = age + t.travelDays / 365.25
-            HStack(spacing: 12) {
-                Image(systemName: "person.fill")
-                    .font(.system(size: isPhone ? 15 : 21))
-                    .foregroundColor(.white.opacity(0.7))
-                    .frame(width: isPhone ? 22 : 30)
-                Text("Your age on arrival")
-                    .font(AppFont.regular(isPhone ? 14 : 20))
-                    .foregroundColor(.white.opacity(0.8))
-                Spacer(minLength: 8)
-                Text(String(format: String(localized: "%@ years", bundle: Bundle.appLanguage),
-                            MetricFormat.plain(arrivalAge, decimals: 1)))
-                    .font(AppFont.bold(isPhone ? 15 : 21))
-                    .foregroundColor(.white)
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            .appCard()
-            .accessibilityElement(children: .combine)
-        } else {
+        let crew = Crew.decode(crewJSON)
+        let people = 1 + crew.count
+        let trip = roundTrip(t)
+        let food = Supplies.kg(crew: people, days: t.travelDays)
+        let fill = food / Supplies.holdKg
+        let barColor: Color = fill <= 0.8 ? .green : fill <= 1 ? .yellow : .orange
+
+        return VStack(spacing: 0) {
             NavigationLink {
-                PlanetAgeCalculatorView()
+                SpacecraftView()
             } label: {
                 HStack(spacing: 12) {
-                    Image(systemName: "birthday.cake.fill")
-                        .font(.system(size: isPhone ? 15 : 21))
-                        .foregroundColor(.white.opacity(0.7))
-                        .frame(width: isPhone ? 22 : 30)
-                    Text("Add your age to see how old you'd be when you arrive")
-                        .font(AppFont.regular(isPhone ? 14 : 20))
-                        .foregroundColor(.white)
-                        .multilineTextAlignment(.leading)
+                    SpacecraftBadge(colorIndex: craftColor, iconIndex: craftIcon, size: isPhone ? 34 : 46)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(Spacecraft.displayName(craftName))
+                            .font(AppFont.bold(isPhone ? 15 : 21))
+                            .foregroundColor(.white)
+                        Text("Crew of \(people)")
+                            .font(AppFont.regular(isPhone ? 12 : 17))
+                            .foregroundColor(.white.opacity(0.55))
+                    }
                     Spacer(minLength: 8)
+                    Text("Edit")
+                        .font(AppFont.bold(isPhone ? 14 : 20))
+                        .foregroundColor(.cyan)
                     Image(systemName: "chevron.forward")
                         .font(.system(size: isPhone ? 12 : 16, weight: .semibold))
                         .foregroundColor(.white.opacity(0.4))
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
-                .appCard()
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+
+            divider
+            crewRow(name: Text("You"), age: earthAge, t: t, trip: trip)
+            ForEach(Array(crew.enumerated()), id: \.element.id) { i, member in
+                divider
+                crewRow(name: member.name.trimmingCharacters(in: .whitespaces).isEmpty
+                            ? Text("Crewmate \(i + 1)") : Text(verbatim: member.name),
+                        age: member.age, t: t, trip: trip)
+            }
+            divider
+
+            // Supplies: a long trip has to carry a lot of food.
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 12) {
+                    Image(systemName: "fork.knife")
+                        .font(.system(size: isPhone ? 15 : 21))
+                        .foregroundColor(.white.opacity(0.7))
+                        .frame(width: isPhone ? 22 : 30)
+                    Text("Food for the flight")
+                        .font(AppFont.regular(isPhone ? 14 : 20))
+                        .foregroundColor(.white.opacity(0.8))
+                    Spacer(minLength: 8)
+                    Text(verbatim: "\(Supplies.weight(food)) / \(Supplies.weight(Supplies.holdKg))")
+                        .font(AppFont.bold(isPhone ? 14 : 20))
+                        .foregroundColor(barColor)
+                }
+
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(Color.black.opacity(0.3))
+                        Capsule().fill(barColor)
+                            .frame(width: max(6, geo.size.width * min(fill, 1)))
+                    }
+                }
+                .frame(height: 8)
+                .environment(\.layoutDirection, .leftToRight)
+                .animation(.easeInOut(duration: 0.25), value: fill)
+
+                Group {
+                    if fill > 1 {
+                        Text("Too much for the hold! Pick a faster route or a smaller crew.")
+                            .foregroundColor(.orange)
+                    } else {
+                        Text("\(people) people × \(MissionFormat.duration(t.travelDays)) × 1.7 kg a day")
+                            .foregroundColor(.white.opacity(0.55))
+                    }
+                }
+                .font(AppFont.regular(isPhone ? 12 : 17))
+                .fixedSize(horizontal: false, vertical: true)
+
+                if let trip {
+                    Text("Whole round trip: \(Supplies.weight(Supplies.kg(crew: people, days: trip.totalDays))) of food")
+                        .font(AppFont.regular(isPhone ? 12 : 17))
+                        .foregroundColor(.white.opacity(0.55))
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .accessibilityElement(children: .combine)
         }
+        .appCard()
+    }
+
+    /// One person: their age on arrival, and when they're back home.
+    @ViewBuilder
+    private func crewRow(name: Text, age: Double?, t: TransferOrbit, trip: RoundTrip?) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: "person.fill")
+                .font(.system(size: isPhone ? 15 : 21))
+                .foregroundColor(.white.opacity(0.7))
+                .frame(width: isPhone ? 22 : 30)
+            name
+                .font(AppFont.regular(isPhone ? 14 : 20))
+                .foregroundColor(.white)
+                .lineLimit(1)
+            Spacer(minLength: 8)
+            if let age {
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text("\(MetricFormat.plain(age + t.travelDays / 365.25, decimals: 1)) on arrival")
+                        .font(AppFont.bold(isPhone ? 14 : 20))
+                        .foregroundColor(.white)
+                    if let trip {
+                        Text("\(MetricFormat.plain(age + trip.totalDays / 365.25, decimals: 1)) back home")
+                            .font(AppFont.regular(isPhone ? 12 : 17))
+                            .foregroundColor(.white.opacity(0.55))
+                    }
+                }
+            } else {
+                NavigationLink {
+                    PlanetAgeCalculatorView()
+                } label: {
+                    Text("Add your age")
+                        .font(AppFont.bold(isPhone ? 14 : 20))
+                        .foregroundColor(.cyan)
+                }
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: Real missions
@@ -767,6 +916,39 @@ struct MissionBuilderView: View {
         .accessibilityElement(children: .combine)
     }
 
+    // MARK: Challenge link
+
+    /// Sends players who've got the hang of it to Mission Control.
+    private var challengeLink: some View {
+        NavigationLink {
+            MissionChallengesView()
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: "flag.checkered")
+                    .font(.system(size: isPhone ? 16 : 22, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(width: isPhone ? 34 : 46, height: isPhone ? 34 : 46)
+                    .background(RoundedRectangle(cornerRadius: 10)
+                        .fill(LinearGradient(colors: [.orange, .pink], startPoint: .topLeading, endPoint: .bottomTrailing)))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Ready for a challenge?")
+                        .font(AppFont.bold(isPhone ? 15 : 21))
+                        .foregroundColor(.white)
+                    Text("Plan real missions and earn stars")
+                        .font(AppFont.regular(isPhone ? 12 : 17))
+                        .foregroundColor(.white.opacity(0.6))
+                }
+                Spacer(minLength: 8)
+                Image(systemName: "chevron.forward")
+                    .font(.system(size: isPhone ? 12 : 16, weight: .semibold))
+                    .foregroundColor(.white.opacity(0.4))
+            }
+            .padding(14)
+            .appCard(cornerRadius: 16)
+        }
+        .buttonStyle(.plain)
+    }
+
     // MARK: Summary
 
     private var summary: some View {
@@ -789,15 +971,8 @@ struct MissionBuilderView: View {
         .accessibilityElement(children: .combine)
     }
 
-    /// Days under ~2 years read as months; longer trips as years.
     private func durationText(_ days: Double) -> String {
-        if days < 60 {
-            return String(format: String(localized: "%@ days", bundle: Bundle.appLanguage), MetricFormat.plain(days, decimals: 0))
-        }
-        if days < 730 {
-            return String(format: String(localized: "%@ months", bundle: Bundle.appLanguage), MetricFormat.plain(days / 30.44, decimals: 1))
-        }
-        return String(format: String(localized: "%@ years", bundle: Bundle.appLanguage), MetricFormat.plain(days / 365.25, decimals: 1))
+        MissionFormat.duration(days)
     }
 }
 
